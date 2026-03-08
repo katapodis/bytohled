@@ -1,0 +1,53 @@
+search_criteria:
+  location: "Ostrava"
+  disposition:
+    - "1+1"
+    - "1+kk"
+    - "1 kk"
+    - "1 + kk"
+    - "1+1/52"   # Sreality variant
+  max_price: 2500000
+  include_no_price: true
+
+scheduler:
+  interval_minutes: 20
+
+notifications:
+  telegram:
+    enabled: true
+  email:
+    enabled: true
+
+sources:
+  sreality:
+    enabled: true
+    base_url: "https://www.sreality.cz/api/cs/v2/estates"
+    # category_main_cb=1 (byty), category_type_cb=1 (prodej)
+    # locality_region_id=14 (Moravskoslezský kraj), locality_district_id=72 (Ostrava-město)
+  bezrealitky:
+    enabled: true
+    base_url: "https://www.bezrealitky.cz/api/record/markers"
+  reality_cz:
+    enabled: true
+    base_url: "https://www.reality.cz/byty/ostrava/"
+  bazos:
+    enabled: true
+    base_url: "https://reality.bazos.cz/byt/"
+  facebook:
+    enabled: false  # best-effort, prone to blocking
+    groups:
+      - "https://www.facebook.com/groups/byty.ostrava"
+      - "https://www.facebook.com/groups/ostrava.reality"
+  local_agencies:
+    - name: "RE/MAX Ostrava"
+      url: "https://www.remax-czech.cz/reality/byty/prodej/?okres=ostrava"
+      enabled: true
+    - name: "Century 21 Ostrava"
+      url: "https://www.century21.cz/vyhledavani/?lokace=Ostrava&typ=byt&druh=prodej"
+      enabled: true
+    - name: "M&M Reality Ostrava"
+      url: "https://www.mmreality.cz/nemovitosti/?city=ostrava&type=flat&deal=sale"
+      enabled: true
+    - name: "Sting Reality"
+      url: "https://www.stingreality.cz/nabidka/?mesto=ostrava&typ=byt&akce=prodej"
+      enabled: true
