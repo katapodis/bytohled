@@ -1,7 +1,5 @@
 # tests/test_database.py
 import pytest
-import os
-import tempfile
 from datetime import datetime
 from core.database import Database, Listing
 
@@ -68,3 +66,32 @@ def test_log_scrape(db):
     logs = db.get_scrape_logs("sreality", limit=1)
     assert len(logs) == 1
     assert logs[0]["listings_found"] == 5
+
+def test_insert_listing_return_value(db):
+    """insert_listing returns True for new listings, False for duplicates."""
+    listing = Listing(source="sreality", external_id="777",
+                      url="https://example.com/777", title="Test Return")
+    first = db.insert_listing(listing)
+    second = db.insert_listing(listing)
+    assert first is True
+    assert second is False
+
+def test_get_unnotified_excludes_inactive(db):
+    """get_unnotified_listings should not return is_active=0 listings."""
+    active = Listing(source="sreality", external_id="active1",
+                     url="https://example.com/active1", title="Active")
+    inactive = Listing(source="sreality", external_id="inactive1",
+                       url="https://example.com/inactive1", title="Inactive",
+                       is_active=False)
+    db.insert_listing(active)
+    db.insert_listing(inactive)
+    # Force the inactive listing's is_active flag to 0 (insert sets it to 1 via UPDATE)
+    db.conn.execute(
+        "UPDATE listings SET is_active=0 WHERE source=? AND external_id=?",
+        ("sreality", "inactive1"),
+    )
+    db.conn.commit()
+    unnotified = db.get_unnotified_listings()
+    external_ids = [l.external_id for l in unnotified]
+    assert "active1" in external_ids
+    assert "inactive1" not in external_ids

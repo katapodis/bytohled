@@ -1,6 +1,6 @@
 # core/database.py
 import sqlite3
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional, List
 from loguru import logger
@@ -11,7 +11,7 @@ class Listing:
     source: str
     external_id: str
     url: str
-    title: str
+    title: Optional[str] = None
     price: Optional[int] = None
     size_category: Optional[str] = None
     location: Optional[str] = None
@@ -29,6 +29,8 @@ class Database:
         self.db_path = db_path
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
+        self.conn.execute("PRAGMA journal_mode=WAL")
+        self.conn.execute("PRAGMA busy_timeout=5000")
         self._create_tables()
 
     def _create_tables(self) -> None:
@@ -52,6 +54,8 @@ class Database:
                 UNIQUE(source, external_id)
             );
 
+            CREATE INDEX IF NOT EXISTS idx_listings_unnotified ON listings (notified_at, is_active);
+
             CREATE TABLE IF NOT EXISTS scrape_log (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 source TEXT NOT NULL,
@@ -74,7 +78,7 @@ class Database:
         """Insert listing. Returns True if new, False if duplicate."""
         try:
             now = datetime.now().isoformat()
-            self.conn.execute(
+            cursor = self.conn.execute(
                 """INSERT OR IGNORE INTO listings
                    (source, external_id, url, title, price, size_category,
                     location, description, images_json, raw_data,
@@ -88,6 +92,7 @@ class Database:
                     now, now, int(listing.is_active),
                 ),
             )
+            is_new = cursor.rowcount > 0
             # Update last_seen_at for existing entries
             self.conn.execute(
                 "UPDATE listings SET last_seen_at=?, is_active=1 "
@@ -95,7 +100,7 @@ class Database:
                 (now, listing.source, listing.external_id),
             )
             self.conn.commit()
-            return True
+            return is_new
         except Exception as e:
             logger.error(f"DB insert error: {e}")
             return False
@@ -145,6 +150,14 @@ class Database:
         ).fetchall()
         return [dict(r) for r in rows]
 
+    def _parse_dt(self, value) -> Optional[datetime]:
+        if value is None:
+            return None
+        try:
+            return datetime.fromisoformat(str(value))
+        except (ValueError, TypeError):
+            return None
+
     def _row_to_listing(self, row: sqlite3.Row) -> Listing:
         return Listing(
             source=row["source"],
@@ -157,7 +170,9 @@ class Database:
             description=row["description"],
             images_json=row["images_json"],
             raw_data=row["raw_data"],
-            notified_at=row["notified_at"],
+            first_seen_at=self._parse_dt(row["first_seen_at"]),
+            last_seen_at=self._parse_dt(row["last_seen_at"]),
+            notified_at=self._parse_dt(row["notified_at"]),
             is_active=bool(row["is_active"]),
         )
 
