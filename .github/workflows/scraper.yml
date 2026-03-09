@@ -18,9 +18,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: listings.db
-          key: listings-db-${{ github.run_id }}
-          restore-keys: |
-            listings-db-
+          key: listings-db-main
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -51,4 +49,4 @@ jobs:
         uses: actions/cache@v4
         with:
           path: listings.db
-          key: listings-db-${{ github.run_id }}
+          key: listings-db-main

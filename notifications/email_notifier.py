@@ -1,6 +1,7 @@
 # notifications/email_notifier.py
 import smtplib
 import json
+import html as html_module
 from datetime import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
@@ -34,20 +35,26 @@ class EmailNotifier:
             if images else ""
         )
         desc = (listing.description or "")[:300]
+        safe_title = html_module.escape(listing.title or "")
+        safe_desc = html_module.escape(desc)
+        safe_location = html_module.escape(listing.location or "N/A")
+        safe_disposition = html_module.escape(listing.size_category or "N/A")
+        safe_source = html_module.escape(listing.source)
+        safe_url = listing.url if (listing.url or "").startswith(("http://", "https://")) else "#"
         return f"""<!DOCTYPE html>
 <html lang="cs">
-<head><meta charset="utf-8"><title>{listing.title}</title></head>
+<head><meta charset="utf-8"><title>{safe_title}</title></head>
 <body style="font-family:Arial,sans-serif;max-width:600px;margin:auto">
-  <h2 style="color:#2c5f2e">🏠 {listing.title}</h2>
+  <h2 style="color:#2c5f2e">🏠 {safe_title}</h2>
   {img_html}
   <p><strong>Cena:</strong> {price_str}</p>
-  <p><strong>Dispozice:</strong> {listing.size_category or "N/A"}</p>
-  <p><strong>Lokalita:</strong> {listing.location or "N/A"}</p>
-  <p><strong>Popis:</strong> {desc}</p>
-  <p><a href="{listing.url}" style="background:#2c5f2e;color:white;padding:10px 20px;
+  <p><strong>Dispozice:</strong> {safe_disposition}</p>
+  <p><strong>Lokalita:</strong> {safe_location}</p>
+  <p><strong>Popis:</strong> {safe_desc}</p>
+  <p><a href="{safe_url}" style="background:#2c5f2e;color:white;padding:10px 20px;
      border-radius:5px;text-decoration:none">Zobrazit inzerát</a></p>
   <hr/>
-  <small>Zdroj: {listing.source} | Nalezeno: {datetime.now().strftime("%d.%m.%Y %H:%M")}</small>
+  <small>Zdroj: {safe_source} | Nalezeno: {datetime.now().strftime("%d.%m.%Y %H:%M")}</small>
 </body>
 </html>"""
 

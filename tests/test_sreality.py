@@ -15,7 +15,7 @@ SAMPLE_RESPONSE = {
                 "locality": "Ostrava-Jih, Ostrava",
                 "price_czk": {"value_raw": 1490000},
                 "type": 1,
-                "subtype": 2,
+                "category_sub_cb": 2,
                 "_links": {
                     "self": {"href": "/cs/v2/estates/12345678"},
                     "images": [{"href": "https://cdn.sreality.cz/img/abc.jpg"}]
@@ -47,6 +47,7 @@ def test_fetch_listings_parses_response(mock_sleep, scraper):
     assert listings[0].external_id == "12345678"
     assert listings[0].price == 1490000
     assert "Ostrava" in listings[0].location
+    assert listings[0].size_category == "1+1"
 
 @resp_mock.activate
 @patch('time.sleep')

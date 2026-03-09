@@ -67,8 +67,12 @@ class TelegramNotifier:
             "parse_mode": "Markdown",
         }
         async with session.post(url, json=payload) as resp:
-            if resp.status == 200:
-                return True
+            try:
+                result = await resp.json()
+                if result.get("ok"):
+                    return True
+            except Exception:
+                pass
             logger.warning(f"[telegram] sendPhoto failed: {resp.status}")
             return False
 

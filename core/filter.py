@@ -32,7 +32,7 @@ class ListingFilter:
 
     def _check_disposition(self, listing: Listing) -> bool:
         if not listing.size_category:
-            return False  # can't verify disposition
+            return True  # include when disposition unknown — user judges from title
         normalized = listing.size_category.lower().replace(" ", "")
         for d in self.dispositions:
             if d.replace(" ", "") == normalized:

@@ -76,6 +76,7 @@ class SrealityScraper(BaseScraper):
             return None
 
     def _map_disposition(self, estate: dict) -> str:
-        sub = estate.get("subtype", 0)
+        # Sreality API v2 uses category_sub_cb; some responses use subtype
+        sub = estate.get("category_sub_cb") or estate.get("subtype", 0)
         mapping = {2: "1+1", 3: "1+kk"}
         return mapping.get(sub, "")

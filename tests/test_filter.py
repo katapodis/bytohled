@@ -45,6 +45,10 @@ def test_disposition_case_insensitive(flt):
 def test_rejects_wrong_disposition(flt):
     assert flt.matches(make_listing(size_category="2+1")) is False
 
+def test_includes_unknown_disposition(flt):
+    """When size_category is None/empty, include listing so user can judge from title."""
+    assert flt.matches(make_listing(size_category=None)) is True
+
 def test_location_in_title_fallback(flt):
     """If location field is empty, check title."""
     assert flt.matches(make_listing(location=None, title="Byt 1+1 Ostrava")) is True
