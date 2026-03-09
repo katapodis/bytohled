@@ -40,6 +40,8 @@ class TelegramNotifier:
 
     async def _send_async(self, listing: Listing) -> bool:
         import aiohttp
+        import ssl
+        import certifi
         text = self.format_message(listing)
         images = []
         if listing.images_json:
@@ -47,8 +49,10 @@ class TelegramNotifier:
                 images = json.loads(listing.images_json)
             except (ValueError, TypeError):
                 pass
+        ssl_ctx = ssl.create_default_context(cafile=certifi.where())
+        connector = aiohttp.TCPConnector(ssl=ssl_ctx)
         try:
-            async with aiohttp.ClientSession() as session:
+            async with aiohttp.ClientSession(connector=connector) as session:
                 if images:
                     ok = await self._send_photo(session, text, images[0])
                     if ok:

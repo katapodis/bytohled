@@ -34,6 +34,7 @@ class LocalAgencyScraper(BaseScraper):
         listings = []
         # Generic selectors - works for most RK sites
         links = soup.select("a[href*='byt'], a[href*='flat'], a[href*='prodej']")
+        source_path_depth = len([p for p in url.split("/") if p])
         seen: set = set()
         for link in links:
             href = link.get("href", "")
@@ -41,6 +42,13 @@ class LocalAgencyScraper(BaseScraper):
                 continue
             seen.add(href)
             full_url = href if href.startswith("http") else f"{self._base_domain(url)}{href}"
+            # Skip navigation/category links: require a numeric ID in the URL path
+            if not re.search(r"/\d{4,}", full_url):
+                continue
+            # Skip if not deeper than the source search URL (avoids category pages)
+            link_path_depth = len([p for p in full_url.split("/") if p])
+            if link_path_depth <= source_path_depth:
+                continue
             text = link.get_text(strip=True)
             if not text or len(text) < 5:
                 continue

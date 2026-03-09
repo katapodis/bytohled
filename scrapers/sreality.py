@@ -9,11 +9,11 @@ from core.database import Listing
 class SrealityScraper(BaseScraper):
     source_id = "sreality"
 
-    # Sreality API: byty (1), prodej (1), Ostrava-město (district 72)
+    # Sreality API: byty (1), prodej (1), Ostrava-město (district 65)
     API_PARAMS = {
         "category_main_cb": 1,   # byty
         "category_type_cb": 1,   # prodej
-        "locality_district_id": 72,  # Ostrava-město
+        "locality_district_id": 65,  # Ostrava-město
         "per_page": 60,
     }
     # category_sub_cb: 2=1+1, 3=1+kk
@@ -76,7 +76,7 @@ class SrealityScraper(BaseScraper):
             return None
 
     def _map_disposition(self, estate: dict) -> str:
-        # Sreality API v2 uses category_sub_cb; some responses use subtype
-        sub = estate.get("category_sub_cb") or estate.get("subtype", 0)
+        # category_sub_cb is nested inside the 'seo' object in Sreality API v2
+        sub = estate.get("seo", {}).get("category_sub_cb") or estate.get("category_sub_cb") or 0
         mapping = {2: "1+1", 3: "1+kk"}
         return mapping.get(sub, "")

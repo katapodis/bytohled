@@ -23,7 +23,7 @@ sources:
     enabled: true
     base_url: "https://www.sreality.cz/api/cs/v2/estates"
     # category_main_cb=1 (byty), category_type_cb=1 (prodej)
-    # locality_region_id=14 (Moravskoslezský kraj), locality_district_id=72 (Ostrava-město)
+    # locality_district_id=65 (Ostrava-město, verified)
   bezrealitky:
     enabled: true
     base_url: "https://www.bezrealitky.cz/api/record/markers"
