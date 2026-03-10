@@ -1,6 +1,4 @@
 # tests/test_web_auth.py
-import os
-import pytest
 from unittest.mock import MagicMock
 
 

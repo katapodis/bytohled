@@ -1,6 +1,7 @@
 # web/auth.py
+import hmac
 import os
-from itsdangerous import URLSafeSerializer, BadSignature
+from itsdangerous import URLSafeSerializer, BadData
 from fastapi import Request
 
 
@@ -19,12 +20,17 @@ def get_current_user(request: Request) -> str | None:
         return None
     try:
         data = _serializer().loads(token)
+        if not isinstance(data, dict):
+            return None
         return data.get("user")
-    except BadSignature:
+    except BadData:
         return None
 
 
 def check_credentials(username: str, password: str) -> bool:
     expected_user = os.getenv("DASHBOARD_USER", "admin")
     expected_pass = os.getenv("DASHBOARD_PASSWORD", "changeme")
-    return username == expected_user and password == expected_pass
+    return (
+        hmac.compare_digest(username, expected_user)
+        and hmac.compare_digest(password, expected_pass)
+    )
