@@ -31,6 +31,9 @@ Přejdi na: `Settings → Secrets and variables → Actions → New repository s
 | `SMTP_PASSWORD` | Heslo nebo [App Password](https://myaccount.google.com/apppasswords) (Gmail) |
 | `EMAIL_FROM` | Odesílací adresa |
 | `EMAIL_TO` | Adresa pro příjem notifikací |
+| `DASHBOARD_USER` | Dashboard login username |
+| `DASHBOARD_PASSWORD` | Dashboard login password |
+| `SECRET_KEY` | Session cookie signing key (generate with: `python3 -c "import secrets; print(secrets.token_hex(32))"`) |
 
 ### 3. Uprav config.yaml (volitelné)
 
@@ -61,6 +64,30 @@ pytest tests/ -v
 
 ---
 
+## Web Dashboard
+
+Webové rozhraní pro prohlížení nalezených inzerátů.
+
+### Spuštění
+
+```bash
+uvicorn web.app:app --host 0.0.0.0 --port 8000
+```
+
+### Spuštění scraperů i dashboardu současně
+
+```bash
+# Terminal 1 – scraper daemon
+python main.py --daemon
+
+# Terminal 2 – web dashboard
+uvicorn web.app:app --reload --port 8000
+```
+
+Otevři prohlížeč na: http://localhost:8000
+
+---
+
 ## Struktura projektu
 
 ```
@@ -82,9 +109,11 @@ bytohled/
 │   ├── database.py          # SQLite persistence
 │   ├── filter.py            # filtrování inzerátů
 │   └── runner.py            # orchestrace
-└── notifications/
-    ├── telegram.py          # Telegram Bot API
-    └── email_notifier.py    # SMTP email
+├── notifications/
+│   ├── telegram.py          # Telegram Bot API
+│   └── email_notifier.py    # SMTP email
+└── web/
+    └── app.py               # FastAPI web dashboard
 ```
 
 ## Zdroje dat
