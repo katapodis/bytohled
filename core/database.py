@@ -154,8 +154,8 @@ class Database:
         row = self.conn.execute("""
             SELECT
                 COUNT(*) AS total,
-                SUM(CASE WHEN notified_at IS NOT NULL THEN 1 ELSE 0 END) AS notified,
-                SUM(CASE WHEN is_active=1 THEN 1 ELSE 0 END) AS active,
+                COALESCE(SUM(CASE WHEN notified_at IS NOT NULL THEN 1 ELSE 0 END), 0) AS notified,
+                COALESCE(SUM(CASE WHEN is_active=1 THEN 1 ELSE 0 END), 0) AS active,
                 COUNT(DISTINCT source) AS sources
             FROM listings
         """).fetchone()
@@ -166,7 +166,7 @@ class Database:
             SELECT
                 source,
                 COUNT(*) AS total,
-                SUM(CASE WHEN notified_at IS NOT NULL THEN 1 ELSE 0 END) AS notified,
+                COALESCE(SUM(CASE WHEN notified_at IS NOT NULL THEN 1 ELSE 0 END), 0) AS notified,
                 MAX(last_seen_at) AS last_seen
             FROM listings
             GROUP BY source
@@ -188,7 +188,7 @@ class Database:
         unnotified_only: bool = False,
         page: int = 1,
         per_page: int = 50,
-    ) -> tuple:
+    ) -> tuple[list[Listing], int]:
         """Returns (listings, total_count)."""
         where = ["1=1"]
         params: List = []

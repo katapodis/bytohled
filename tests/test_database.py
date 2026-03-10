@@ -97,6 +97,14 @@ def test_get_unnotified_excludes_inactive(db):
     assert "inactive1" not in external_ids
 
 
+def test_get_dashboard_stats_empty_db(db):
+    stats = db.get_dashboard_stats()
+    assert stats["total"] == 0
+    assert stats["notified"] == 0
+    assert stats["active"] == 0
+    assert stats["sources"] == 0
+
+
 def test_get_dashboard_stats(db):
     db.insert_listing(Listing(source="sreality", external_id="s1",
                                url="https://ex.com/s1", title="A", price=1000000))
