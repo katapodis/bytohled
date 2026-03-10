@@ -56,7 +56,9 @@ def test_authenticated_dashboard_returns_200(client):
     login = client.post("/login", data={"username": "admin", "password": "secret"},
                         follow_redirects=False)
     session = login.cookies["session"]
-    resp = client.get("/dashboard", cookies={"session": session})
+    client.cookies.set("session", session)
+    resp = client.get("/dashboard")
+    client.cookies.clear()
     assert resp.status_code == 200
 
 
@@ -64,7 +66,9 @@ def test_authenticated_listings_returns_200(client):
     login = client.post("/login", data={"username": "admin", "password": "secret"},
                         follow_redirects=False)
     session = login.cookies["session"]
-    resp = client.get("/listings", cookies={"session": session})
+    client.cookies.set("session", session)
+    resp = client.get("/listings")
+    client.cookies.clear()
     assert resp.status_code == 200
 
 
@@ -72,7 +76,9 @@ def test_logout_clears_cookie(client):
     login = client.post("/login", data={"username": "admin", "password": "secret"},
                         follow_redirects=False)
     session = login.cookies["session"]
-    resp = client.post("/logout", cookies={"session": session})
+    client.cookies.set("session", session)
+    resp = client.post("/logout")
+    client.cookies.clear()
     assert resp.status_code == 302
     # Cookie should be deleted (empty value or absent)
     assert resp.cookies.get("session", "") == ""
