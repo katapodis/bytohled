@@ -51,7 +51,7 @@
           <td><code>{{ row.source }}</code></td>
           <td>{{ row.total }}</td>
           <td>{{ row.notified }}</td>
-          <td class="text-muted small">{{ (row.last_seen or "&ndash;")[:16] }}</td>
+          <td class="text-muted small">{{ (row.last_seen or "–")[:16] }}</td>
         </tr>
         {% else %}
         <tr><td colspan="4" class="text-muted">&Zcaron;&aacute;dn&aacute; data</td></tr>

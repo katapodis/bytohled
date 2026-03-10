@@ -66,8 +66,8 @@
           {% endif %}
         </td>
         <td>
-          <a href="{{ listing.url }}" target="_blank" rel="noopener">
-            {{ listing.title or "&mdash;" }}
+          <a href="{{ listing.url }}" target="_blank" rel="noopener noreferrer">
+            {{ listing.title or "—" }}
           </a>
         </td>
         <td class="text-nowrap">
@@ -77,10 +77,10 @@
           <span class="text-muted">&mdash;</span>
           {% endif %}
         </td>
-        <td>{{ listing.size_category or "&mdash;" }}</td>
-        <td class="small text-muted">{{ listing.location or "&mdash;" }}</td>
+        <td>{{ listing.size_category or "—" }}</td>
+        <td class="small text-muted">{{ listing.location or "—" }}</td>
         <td><code class="small">{{ listing.source }}</code></td>
-        <td class="small text-muted text-nowrap">{{ (listing.first_seen_at | string)[:16] if listing.first_seen_at else "&mdash;" }}</td>
+        <td class="small text-muted text-nowrap">{{ (listing.first_seen_at | string)[:16] if listing.first_seen_at else "—" }}</td>
         <td class="text-center">
           {% if listing.notified_at %}
           <span class="text-success">&#10003;</span>
