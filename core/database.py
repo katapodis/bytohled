@@ -150,6 +150,77 @@ class Database:
         ).fetchall()
         return [dict(r) for r in rows]
 
+    def get_dashboard_stats(self) -> dict:
+        row = self.conn.execute("""
+            SELECT
+                COUNT(*) AS total,
+                SUM(CASE WHEN notified_at IS NOT NULL THEN 1 ELSE 0 END) AS notified,
+                SUM(CASE WHEN is_active=1 THEN 1 ELSE 0 END) AS active,
+                COUNT(DISTINCT source) AS sources
+            FROM listings
+        """).fetchone()
+        return dict(row)
+
+    def get_per_source_stats(self) -> List[dict]:
+        rows = self.conn.execute("""
+            SELECT
+                source,
+                COUNT(*) AS total,
+                SUM(CASE WHEN notified_at IS NOT NULL THEN 1 ELSE 0 END) AS notified,
+                MAX(last_seen_at) AS last_seen
+            FROM listings
+            GROUP BY source
+            ORDER BY total DESC
+        """).fetchall()
+        return [dict(r) for r in rows]
+
+    def get_all_sources(self) -> List[str]:
+        rows = self.conn.execute(
+            "SELECT DISTINCT source FROM listings ORDER BY source"
+        ).fetchall()
+        return [r[0] for r in rows]
+
+    def get_listings_filtered(
+        self,
+        source: Optional[str] = None,
+        disposition: Optional[str] = None,
+        max_price: Optional[int] = None,
+        unnotified_only: bool = False,
+        page: int = 1,
+        per_page: int = 50,
+    ) -> tuple:
+        """Returns (listings, total_count)."""
+        where = ["1=1"]
+        params: List = []
+        if source:
+            where.append("source = ?")
+            params.append(source)
+        if disposition:
+            where.append("size_category = ?")
+            params.append(disposition)
+        if max_price is not None:
+            where.append("(price IS NULL OR price <= ?)")
+            params.append(max_price)
+        if unnotified_only:
+            where.append("notified_at IS NULL")
+        clause = " AND ".join(where)
+        total = self.conn.execute(
+            f"SELECT COUNT(*) FROM listings WHERE {clause}", params
+        ).fetchone()[0]
+        offset = (page - 1) * per_page
+        rows = self.conn.execute(
+            f"SELECT * FROM listings WHERE {clause} "
+            f"ORDER BY first_seen_at DESC LIMIT ? OFFSET ?",
+            params + [per_page, offset],
+        ).fetchall()
+        return [self._row_to_listing(r) for r in rows], total
+
+    def get_recent_scrape_logs(self, limit: int = 20) -> List[dict]:
+        rows = self.conn.execute(
+            "SELECT * FROM scrape_log ORDER BY id DESC LIMIT ?", (limit,)
+        ).fetchall()
+        return [dict(r) for r in rows]
+
     def _parse_dt(self, value) -> Optional[datetime]:
         if value is None:
             return None

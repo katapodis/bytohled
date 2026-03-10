@@ -95,3 +95,87 @@ def test_get_unnotified_excludes_inactive(db):
     external_ids = [l.external_id for l in unnotified]
     assert "active1" in external_ids
     assert "inactive1" not in external_ids
+
+
+def test_get_dashboard_stats(db):
+    db.insert_listing(Listing(source="sreality", external_id="s1",
+                               url="https://ex.com/s1", title="A", price=1000000))
+    db.insert_listing(Listing(source="bezrealitky", external_id="b1",
+                               url="https://ex.com/b1", title="B"))
+    db.mark_notified("sreality", "s1")
+    stats = db.get_dashboard_stats()
+    assert stats["total"] == 2
+    assert stats["notified"] == 1
+    assert stats["active"] == 2
+    assert stats["sources"] == 2
+
+
+def test_get_per_source_stats(db):
+    db.insert_listing(Listing(source="sreality", external_id="s1",
+                               url="https://ex.com/s1", title="A"))
+    db.insert_listing(Listing(source="sreality", external_id="s2",
+                               url="https://ex.com/s2", title="B"))
+    db.insert_listing(Listing(source="bazos", external_id="z1",
+                               url="https://ex.com/z1", title="C"))
+    rows = db.get_per_source_stats()
+    sources = {r["source"]: r for r in rows}
+    assert sources["sreality"]["total"] == 2
+    assert sources["bazos"]["total"] == 1
+
+
+def test_get_all_sources(db):
+    db.insert_listing(Listing(source="sreality", external_id="s1",
+                               url="https://ex.com/s1", title="A"))
+    db.insert_listing(Listing(source="bazos", external_id="z1",
+                               url="https://ex.com/z1", title="B"))
+    sources = db.get_all_sources()
+    assert "sreality" in sources
+    assert "bazos" in sources
+
+
+def test_get_listings_filtered_by_source(db):
+    db.insert_listing(Listing(source="sreality", external_id="s1",
+                               url="https://ex.com/s1", title="A"))
+    db.insert_listing(Listing(source="bazos", external_id="z1",
+                               url="https://ex.com/z1", title="B"))
+    items, total = db.get_listings_filtered(source="sreality")
+    assert total == 1
+    assert items[0].source == "sreality"
+
+
+def test_get_listings_filtered_by_price(db):
+    db.insert_listing(Listing(source="sreality", external_id="s1",
+                               url="https://ex.com/s1", title="A", price=1000000))
+    db.insert_listing(Listing(source="sreality", external_id="s2",
+                               url="https://ex.com/s2", title="B", price=3000000))
+    items, total = db.get_listings_filtered(max_price=2000000)
+    assert total == 1
+    assert items[0].price == 1000000
+
+
+def test_get_listings_filtered_unnotified_only(db):
+    db.insert_listing(Listing(source="sreality", external_id="s1",
+                               url="https://ex.com/s1", title="A"))
+    db.insert_listing(Listing(source="sreality", external_id="s2",
+                               url="https://ex.com/s2", title="B"))
+    db.mark_notified("sreality", "s1")
+    items, total = db.get_listings_filtered(unnotified_only=True)
+    assert total == 1
+    assert items[0].external_id == "s2"
+
+
+def test_get_listings_filtered_pagination(db):
+    for i in range(5):
+        db.insert_listing(Listing(source="sreality", external_id=str(i),
+                                   url=f"https://ex.com/{i}", title=f"Byt {i}"))
+    items, total = db.get_listings_filtered(page=1, per_page=2)
+    assert total == 5
+    assert len(items) == 2
+
+
+def test_get_recent_scrape_logs_all_sources(db):
+    from datetime import datetime
+    db.log_scrape("sreality", datetime.now(), datetime.now(), 10, 5, None)
+    db.log_scrape("bazos", datetime.now(), datetime.now(), 3, 1, "timeout")
+    logs = db.get_recent_scrape_logs(limit=10)
+    assert len(logs) == 2
