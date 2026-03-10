@@ -4,7 +4,7 @@ import os
 from pathlib import Path
 from typing import Optional
 
-from fastapi import FastAPI, Form, Request
+from fastapi import FastAPI, Form, Query, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 
@@ -16,7 +16,7 @@ _TEMPLATES_DIR = Path(__file__).parent / "templates"
 templates = Jinja2Templates(directory=str(_TEMPLATES_DIR))
 
 
-def _from_json(value) -> list:
+def _from_json(value: str | None) -> list:
     if not value:
         return []
     try:
@@ -99,31 +99,34 @@ async def listings(
     request: Request,
     source: str = "",
     disposition: str = "",
-    max_price: Optional[int] = None,
+    max_price: Optional[int] = Query(default=None, ge=0),
     unnotified: bool = False,
-    page: int = 1,
+    page: int = Query(default=1, ge=1),
 ):
     if not get_current_user(request):
         return RedirectResponse("/login?next=/listings", status_code=302)
     db = _get_db()
     try:
         all_sources = db.get_all_sources()
+        all_dispositions = db.get_all_dispositions()
+        per_page = 50
         items, total = db.get_listings_filtered(
             source=source or None,
             disposition=disposition or None,
             max_price=max_price,
             unnotified_only=unnotified,
             page=page,
+            per_page=per_page,
         )
     finally:
         db.close()
-    per_page = 50
     total_pages = max(1, (total + per_page - 1) // per_page)
     return templates.TemplateResponse(
         request, "listings.html",
         {
             "listings": items,
             "sources": all_sources,
+            "dispositions": all_dispositions,
             "filters": {
                 "source": source,
                 "disposition": disposition,

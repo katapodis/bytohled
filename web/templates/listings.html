@@ -17,7 +17,7 @@
     <label class="form-label small">Dispozice</label>
     <select name="disposition" class="form-select form-select-sm">
       <option value="">V&scaron;echny</option>
-      {% for d in ["1+1", "1+kk"] %}
+      {% for d in dispositions %}
       <option value="{{ d }}" {% if d == filters.disposition %}selected{% endif %}>{{ d }}</option>
       {% endfor %}
     </select>

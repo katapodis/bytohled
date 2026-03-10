@@ -82,3 +82,13 @@ def test_logout_clears_cookie(client):
     assert resp.status_code == 302
     # Cookie should be deleted (empty value or absent)
     assert resp.cookies.get("session", "") == ""
+
+
+def test_login_next_external_redirect_is_rejected(client):
+    resp = client.post("/login", data={
+        "username": "admin",
+        "password": "secret",
+        "next": "https://evil.com",
+    })
+    assert resp.status_code == 302
+    assert resp.headers["location"] == "/dashboard"

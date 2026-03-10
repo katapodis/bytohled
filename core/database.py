@@ -174,6 +174,13 @@ class Database:
         """).fetchall()
         return [dict(r) for r in rows]
 
+    def get_all_dispositions(self) -> list[str]:
+        rows = self.conn.execute(
+            "SELECT DISTINCT size_category FROM listings "
+            "WHERE size_category IS NOT NULL ORDER BY size_category"
+        ).fetchall()
+        return [r[0] for r in rows]
+
     def get_all_sources(self) -> List[str]:
         rows = self.conn.execute(
             "SELECT DISTINCT source FROM listings ORDER BY source"

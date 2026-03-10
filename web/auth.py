@@ -30,7 +30,6 @@ def get_current_user(request: Request) -> str | None:
 def check_credentials(username: str, password: str) -> bool:
     expected_user = os.getenv("DASHBOARD_USER", "admin")
     expected_pass = os.getenv("DASHBOARD_PASSWORD", "changeme")
-    return (
-        hmac.compare_digest(username, expected_user)
-        and hmac.compare_digest(password, expected_pass)
-    )
+    user_ok = hmac.compare_digest(username, expected_user)
+    pass_ok = hmac.compare_digest(password, expected_pass)
+    return user_ok and pass_ok
