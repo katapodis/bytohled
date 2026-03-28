@@ -1,0 +1,10 @@
+source: sreality
+price_type: sale
+locations:
+  - name: "Ostrava"
+    params:
+      locality_district_id: 65
+  - name: "Frýdek-Místek"
+    params:
+      locality_district_id: 72
+enabled: true
