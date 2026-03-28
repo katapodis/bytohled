@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Literal
 
 
 @dataclass
@@ -8,7 +9,7 @@ class Listing:
     url: str
     title: str
     price: int | None
-    price_type: str          # 'sale' | 'rent'
+    price_type: Literal["sale", "rent"]
     disposition: str | None
     area_m2: int | None
     address: str | None

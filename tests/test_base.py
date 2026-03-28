@@ -1,7 +1,8 @@
+import pytest
 from scrapers.base import Listing, BaseScraper
 
 
-def test_listing_requires_price_type_sale_or_rent():
+def test_listing_stores_price_type():
     listing = Listing(
         external_id="123",
         source="test",
@@ -36,8 +37,5 @@ def test_listing_images_default_empty():
 
 def test_base_scraper_raises_not_implemented():
     scraper = BaseScraper()
-    try:
+    with pytest.raises(NotImplementedError):
         scraper.fetch_listings()
-        assert False, "Should have raised"
-    except NotImplementedError:
-        pass
