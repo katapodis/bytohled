@@ -1,0 +1,588 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0<!DOCTYPE html>
+<html lang="cs">
+<head>
+<title>Byty inzerce - Reality | Bazoš.cz</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="description" content="Kategorie Byty inzerce. Vybírejte z 12 840 inzerátů. Prodej snadno a rychle na Bazoši. Přes půl milionů uživatelů za den."><meta property="og:title" content="Byty inzerce - Reality">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Bazos.cz">
+<meta property="og:description" content="Kategorie Byty inzerce. Vybírejte z 12 840 inzerátů. Prodej snadno a rychle na Bazoši. Přes půl milionů uživatelů za den.">
+<link rel="canonical" href="https://reality.bazos.cz/byt/"><meta property="fb:admins" content="1055875657">
+<link rel="stylesheet" href="https://www.bazos.cz/bazos67s.css" type="text/css"><link rel="preload" as="image" href="https://www.bazos.cz/obrazky/bazos.svg">
+<link rel="stylesheet" href="https://www.bazos.cz/bazosprint.css" type="text/css" media="print">
+<link rel="icon" href="https://www.bazos.cz/favicon.svg" type="image/svg+xml">
+<link rel="icon" HREF="https://www.bazos.cz/favicon.ico" sizes="32x32">
+<link rel="apple-touch-icon" href="https://www.bazos.cz/apple-touch-icon.png">
+<script async="async" src="https://www.google.com/adsense/search/ads.js"></script>
+<script type="text/javascript" charset="utf-8">
+(function(g,o){g[o]=g[o]||function(){(g[o]['q']=g[o]['q']||[]).push(
+  arguments)},g[o]['t']=1*new Date})(window,'_googCsa');
+</script><script>
+var xhr = new XMLHttpRequest();
+var naseptavac_value = '';
+function naseptavac(value) {
+  if (value=='')  {
+  	naseptavac_value = '';
+  	document.getElementById('vysledek').innerHTML='';
+  	}
+else {
+	if (naseptavac_value == value) {
+		return false;
+	}
+	naseptavac_value = value;
+	setTimeout(function () {
+		if (naseptavac_value != value) {
+			return false;
+		}
+		xhr.onreadystatechange = function() {
+ 		 if (this.readyState == 4 && naseptavac_value == value){
+				document.getElementById('vysledek').innerHTML = this.responseText;
+			}
+ 		 };
+		xhr.open("POST", '/suggest.php');
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhr.send('rubnas=RE&catnas=65&qnas='+encodeURIComponent(naseptavac_value));
+	}, 250);
+}
+}
+
+var naseptavacpsc_value = '';
+function naseptavacpsc(value) {
+  if (value=='')  {
+  	naseptavacpsc_value = '';
+  	document.getElementById('vysledekpsc').innerHTML='<table cellpadding=\"3\" cellspacing=\"0\" class=\"tablenaspsc\"><tr><td class=\"act\" onclick=\"getLocation();\"><b>Inzeráty v okolí</b></td></tr></table>';
+  	}
+else {
+	if (naseptavacpsc_value == value) {
+		return false;
+	}
+	naseptavacpsc_value = value;
+	setTimeout(function () {
+		if (naseptavacpsc_value != value) {
+			return false;
+		}
+		xhr.onreadystatechange = function() {
+ 		 if (this.readyState == 4 && naseptavacpsc_value == value){
+				document.getElementById('vysledekpsc').innerHTML = this.responseText;
+			}
+ 		 };
+		xhr.open("POST", '/suggestpsc.php');
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhr.send('qnaspsc='+encodeURIComponent(naseptavacpsc_value));
+	}, 250);
+}
+}
+
+function getLocation() {
+if (navigator.geolocation) {navigator.geolocation.getCurrentPosition(showPosition);}
+else {document.getElementById('hlokalita').value = '';}
+}
+function showPosition(position) {
+		xhr.onreadystatechange = function() {
+ 		 if (this.readyState == 4){
+				document.getElementById('hlokalita').value = this.responseText;
+				document.forms['formt'].submit();
+			}
+ 		 };
+		xhr.open("POST", '/zip.php');
+		xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+		xhr.send('latitude='+encodeURIComponent(position.coords.latitude)+'&longitude='+encodeURIComponent(position.coords.longitude));
+}
+
+var agent_value = '';
+function agentclick() {
+  if (document.getElementById('agentmail').value=='')  {
+  	document.getElementById("agentmail").focus();
+    return false;
+  	}
+else {
+agent_value = document.getElementById('agentmail').value;
+xhr.onreadystatechange = function() {
+  if (this.readyState == 4){
+				document.getElementById('overlay').innerHTML = this.responseText;
+			}
+  };
+xhr.open("POST", '/agent.php');
+xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+xhr.send('hledat=&rubrikav=RE&hlokalita=&humkreis=&cenaod=&cenado=&cat=65&typ=&agentmail='+encodeURIComponent(agent_value));
+}
+}
+
+function odeslatrequest(value,params) {
+xhr.onreadystatechange = function() {
+  if (this.readyState == 4){
+				document.getElementById('overlay').innerHTML = this.responseText;
+			}
+  };
+xhr.open("POST", value);
+xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+xhr.send(params);
+}
+function overlay() {
+	el = document.getElementById("overlay");
+	el.style.display = (el.style.display == "inline") ? "none" : "inline";
+}
+function odeslatakci(postaction,value1,value2,value3) {
+document.getElementById('postaction').value = postaction;
+document.getElementById("postv1").value = value1;
+document.getElementById("postv2").value = value2;
+document.getElementById("postv3").value = value3;
+document.formaction.submit();
+}
+</script>
+</head>
+
+<body>
+
+
+<div class="sirka">
+<div class="listalogor">
+<div class="listalogol"><a href="https://www.bazos.cz/" title="Bazos.cz - Inzerce, bazar"><img src="https://www.bazos.cz/obrazky/bazos.svg" width="199" height="34" alt="Bazos.cz - Inzerce, inzeráty"></a></div>
+<div class="listalogom"><b>... inzerce pro každého</b></div>
+<div class="listalogop"><a href="https://www.bazos.cz/oblibene.php"><b>Oblíbené inzeráty</b></a> <a href="https://www.bazos.cz/moje-inzeraty.php"><b>Moje inzeráty</b></a> <a href="/pridat-inzerat.php"><b><span class=pridati>Přidat inzerát</span></b></a></div>
+</div>
+<form name="formt" id="formt" method=get >
+<div class="listah">
+<div class="rubriky">
+<b>
+Co: <span class=vysokoli><span id="vysledek"></span><input type="search" onkeyup="naseptavac(this.value);" id=hledat name=hledat size="17" maxlength="256" value="" autocomplete="off" title="Co? Vyhledávaný výraz"></span>
+
+<select name="rubriky" onchange='this.form.submit();' title="Vyber rubriku">
+<option value="www">Všechny rubriky</option>
+<option value="auto">Auto</option><option value="deti">Děti</option><option value="dum">Dům a zahrada</option><option value="elektro">Elektro</option><option value="foto">Foto</option><option value="hudba">Hudba</option><option value="knihy">Knihy</option><option value="mobil">Mobily</option><option value="motorky">Motorky</option><option value="nabytek">Nábytek</option><option value="obleceni">Oblečení</option><option value="pc">PC</option><option value="prace">Práce</option><option value="reality" selected>Reality</option><option value="sluzby">Služby</option><option value="sport">Sport</option><option value="stroje">Stroje</option><option value="vstupenky">Vstupenky</option><option value="zvirata">Zvířata</option><option value="ostatni">Ostatní</option></select>
+
+Lokalita: <span class=vysokolipsc><span id="vysledekpsc"></span><input type="search" name="hlokalita" id="hlokalita" onkeyup="naseptavacpsc(this.value);" onclick="naseptavacpsc(this.value);" value="" size="4" maxlength="25" autocomplete="off" title="Kde? PSČ (místo)" style="-webkit-appearance: none;"></span>
+Okolí: <input name="humkreis" title="Okolí v km" value="10" size="3" style="width: 25px;"> km
+Cena od: <input name=cenaod title="Cena od Kč" maxlength="12" size="5" value=""> - do: <input name=cenado title="Cena do Kč" maxlength="12" size="5" value=""> Kč <input type="submit" name="Submit" value="Hledat">
+<input type="hidden" name="order" id="order"><input type="hidden" name="crp" id="crp"><input type="hidden" id="kitx" name="kitx" value="ano"></b>
+</div>
+</div>
+</form>
+<div class="drobky"><a href="https://www.bazos.cz/" title="Inzerce Bazoš">Hlavní stránka</a>  > <a href="https://reality.bazos.cz">Reality</a> > <h1 class="nadpiskategorie">Byty</h1></div>
+<br>
+
+
+<div class="flexmain"><div class="menuleft"><div class="nadpismenu"><a href="/prodam/" >Prodej</a></div>
+<div class="barvalmenu">
+<div class="barvaleva">
+<a href="/prodam/byt/"  id=zvyraznenikat>Byty</a>
+<a href="/prodam/dum/" >Domy</a>
+<a href="/prodam/projekty/" >Nové projekty</a>
+<a href="/prodam/garaz/" >Garáže</a>
+<a href="/prodam/restaurace/" >Hotely, penziony, restaurace</a>
+<a href="/prodam/chata/" >Chalupy, Chaty</a>
+<a href="/prodam/kancelar/" >Kanceláře</a>
+<a href="/prodam/prostory/" >Obchodní prostory</a>
+<a href="/prodam/pozemek/" >Pozemky</a>
+<a href="/prodam/sklad/" >Sklady</a>
+<a href="/prodam/zahrada/" >Zahrady</a>
+<a href="/prodam/ostatni/" >Ostatní</a>
+</div></div>
+
+<br>
+<div class="nadpismenu"><a href="/pronajmu/" >Pronájem</a></div>
+<div class="barvalmenu">
+<div class="barvaleva">
+<a href="/pronajmu/byt/" >Byty</a>
+<a href="/pronajmu/dum/" >Domy</a>
+<a href="/pronajmu/projekty/" >Nové projekty</a>
+<a href="/pronajmu/podnajem/" >Podnájem, spolubydlící</a>
+<a href="/pronajmu/garaz/" >Garáže</a>
+<a href="/pronajmu/restaurace/" >Hotely, penziony, restaurace</a>
+<a href="https://sluzby.bazos.cz/ubytovani/">Ubytování</a>
+<a href="/pronajmu/kancelar/" >Kanceláře</a>
+<a href="/pronajmu/prostory/" >Obchodní prostory</a>
+<a href="/pronajmu/pozemek/" >Pozemky</a>
+<a href="/pronajmu/sklad/" >Sklady</a>
+<a href="/pronajmu/zahrada/" >Zahrady</a>
+<a href="/pronajmu/ostatni/" >Ostatní</a>
+</div></div>
+
+
+<br><div class="mobilskryt" style="text-align: center;">
+<a style="font-size: 13px;text-decoration: none;color:#000000;" href="https://www.jasminka.cz/kniha/clemens-kuby-leceni-zazrak-v-nas.html" target="_blank" rel=”nofollow”><b>Knihkupectví Jasmínka</b><br>
+<span style="font-size: 13px;text-decoration: none;color:#ff6600;">
+<span style="color:#000000;">Clemens Kuby:</span> Léčení - Zázrak v nás<br><img src="https://www.jasminka.cz/images/v/lecenizv.jpg" width="100" alt="Knihkupectví Jasmínka" title="Knihkupectví Jasmínka" style="border: 1px solid Black;margin: 4px;">
+<br>
+<img src="https://www.bazos.cz/kosik.svg" alt="Jasminka" height="22" style="border: 0px;"> koupit</span></a></div>
+
+</div><div class="maincontent">
+
+
+<div class="listainzerat inzeratyflex">
+<div class="inzeratynadpis"><img src="https://www.bazos.cz/obrazky/list.gif" width="18" height="16" alt="List inzerátů" class=gallerylista> <form name="formgal" id="formgal" method="post" style="display: inline;"><input type="hidden" name="gal" value="g"><input type="image" alt="Submit" src="https://www.bazos.cz/obrazky/gallery.gif" width="18" height="16" class="gallerylist inputgal"></form> Zobrazeno 1-20 inzerátů z 12 840</div>
+<div class="inzeratycena"><b><span onclick="document.getElementById('order').value=1;document.forms['formt'].submit();" class="paction">Cena</span></b></div>
+<div class="inzeratylok">Lokalita</div>
+<div class="inzeratyview"><span onclick="document.getElementById('order').value=3;document.forms['formt'].submit();" class="paction">Zobrazeno</span></div>
+</div><form name="formaction" method="post" style="display: inline;"><input type="hidden" id="postaction" name="postaction" value=""><input type="hidden" id="postv1" name="postv1" value=""><input type="hidden" id="postv2" name="postv2" value=""><input type="hidden" id="postv3" name="postv3" value=""></form><button type="button" onclick="odeslatrequest('/agent.php','teloverit=');overlay();">Nové inzeráty e-mailem</button>
+	<div id="overlay">
+     <div></div>
+</div>
+
+<div id="container_one"></div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216500284/byt-2kk-stresni-luxusni-terasa6078m2ihned-k-dispozici.php"><img src="https://www.bazos.cz/obrazky/empty.gif" class="obrazek" alt="BYT 2+KK+ stresni luxusni terasa,60,78m2,IHNED K DISPOZICI." width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216500284/byt-2kk-stresni-luxusni-terasa6078m2ihned-k-dispozici.php">BYT 2+KK+ stresni luxusni terasa,60,78m2,IHNED K DISPOZICI.</a></h2><span class=velikost10> - <span title="TOP 21x Platí do 9.5. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>BYT 2+KK+ střešní luxusní terasa,60,78m2,IHNED K DISPOZICI.
+Nabízím k PRODEJI úplně nový LUXUSNÍ-moderní byt věž B,,2+kk+střešní luxusní terasa, o celkové výměře 60,78 m² nádherným výhledem Byt je umístěn v šestém patře novostavby šestipodlažního by ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 5 499 000 Kč</span></b></div>
+<div class="inzeratylok">Svitavy<br>570 01</div>
+<div class="inzeratyview">465 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216500284');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216500284');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','3961236','519214','SV');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216500284');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216167120/prenecham-najemni-byt-heimstaden-vybaveny.php"><img src="https://www.bazos.cz/img/1t/120/216167120.jpg?t=1774683617" class="obrazek" alt="Přenechám nájemní byt Heimstaden - vybavený" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216167120/prenecham-najemni-byt-heimstaden-vybaveny.php">Přenechám nájemní byt Heimstaden - vybavený</a></h2><span class=velikost10> - <span title="TOP 5x Platí do 22.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Přenechám nájemní byt 3+1 od Heimstadenu, Havířov město, ul. BLludovická, 1. patro, velmi klidná lokalita. V bytu po dohodě zůstane: obrovská vestavná skříň na míru v předsíni - foto 1-3, nástavba nad kuchyňskou linkou, stůl na míru a špajzka 4-6, sk ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  50 000 Kč</span></b></div>
+<div class="inzeratylok">Karviná<br>736 01</div>
+<div class="inzeratyview">542 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216167120');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216167120');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','8954087','6989736','Mark%C3%A9ta');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216167120');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216758774/byt-31-vsetin-travniky.php"><img src="https://www.bazos.cz/img/1t/774/216758774.jpg?t=1774556465" class="obrazek" alt="Byt 3+1, Vsetín , Trávníky" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216758774/byt-31-vsetin-travniky.php">Byt 3+1, Vsetín , Trávníky</a></h2><span class=velikost10> - <span title="TOP 5x Platí do 20.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Prodáváme náš krásný slunný byt na Trávníkách. Komplexní rekonstrukce  v roce 2015, dispozice 3+1, 80m2, sklep,vestavěný nábytek, zánovní kuchyň se spotřebiči.Cihlový bytový dům je čerstvě po revitalizaci, zasklené lodžie,nová střecha, zateplení. V o ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 5 600 000 Kč</span></b></div>
+<div class="inzeratylok">Vsetín<br>755 01</div>
+<div class="inzeratyview">534 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216758774');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216758774');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9403094','7549394','Ladislav+%C5%A0%C5%A5avina');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216758774');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216750013/31-bez-realitky.php"><img src="https://www.bazos.cz/img/1t/013/216750013.jpg?t=1774539144" class="obrazek" alt="3+1 bez realitky" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216750013/31-bez-realitky.php">3+1 bez realitky</a></h2><span class=velikost10> - <span title="TOP 5x Platí do 20.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>BEZ PROVIZE: Nabízíme k prodeji krásný byt 3+1 v osobním vlastnictví nacházející se ve městě Litoměřice, ulice Baarova. Byt se nachází v panelové stavbě a prošel kompletní rekonstrukcí, díky čemuž splňuje všechny moderní standardy bydlení. Díky jedno ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 4 900 000 Kč</span></b></div>
+<div class="inzeratylok">Litoměřice<br>412 01</div>
+<div class="inzeratyview">382 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216750013');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216750013');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9402415','7548630','Jind%C5%99i%C5%A1ka+Stekl%C3%A1');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216750013');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216604634/prodej-bytu-2kk-rozmarynova.php"><img src="https://www.bazos.cz/img/1t/634/216604634.jpg?t=1774380888" class="obrazek" alt="Prodej bytu 2+kk v osobním vlastnictví" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216604634/prodej-bytu-2kk-rozmarynova.php">Prodej bytu 2+kk v osobním vlastnictví</a></h2><span class=velikost10> - <span title="TOP 7x Platí do 20.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Rádi bychom vám představili kompletně zrekonstruovaný byt v osobním vlastnictví 2+kk o ploše 49 m² v ulici Rozmarýnová, který se nachází v klidné a vyhledávané části města Most. Pokud hledáte moderní bydlení s výbornou dostupností do centra, tento by ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 2 749 900 Kč</span></b></div>
+<div class="inzeratylok">Most<br>434 01</div>
+<div class="inzeratyview">1187 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216604634');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216604634');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9241671','6779454','Most+Bydlen%C3%AD');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216604634');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216092893/prodej-bytu-novostavba-2kk-50-m-rostenice-u-vyskova.php"><img src="https://www.bazos.cz/img/1t/893/216092893.jpg?t=1774764007" class="obrazek" alt="Prodej bytu (novostavba) 2+kk 50 m², Rostěnice (u Vyškova)" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216092893/prodej-bytu-novostavba-2kk-50-m-rostenice-u-vyskova.php">Prodej bytu (novostavba) 2+kk 50 m², Rostěnice (u Vyškova)</a></h2><span class=velikost10> - <span title="TOP 18x Platí do 20.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Ev.č. 00062
+Chcete mít město jako Vyškov nebo Brno po ruce a zároveň si užívat pohody vesnice s přírodou na dosah ruky? Takový byt může být Váš!
+
+V zastoupení majitele nabízím k prodeji moderní byt o žádané dispozici 2+kk v novostavbě z roku 2023 v ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 4 849 000 Kč</span></b></div>
+<div class="inzeratylok">Vyškov<br>682 01</div>
+<div class="inzeratyview">1038 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216092893');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216092893');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','8897996','6925857','David+Ho%C5%88ka+%28prodam-reality+s.r.o.%29');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216092893');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216306673/31-litvinov.php"><img src="https://www.bazos.cz/img/1t/673/216306673.jpg?t=1773933886" class="obrazek" alt="3+1 Litvínov" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216306673/31-litvinov.php">3+1 Litvínov</a></h2><span class=velikost10> - <span title="TOP 10x Platí do 19.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Pronájem bytu 3+1, Litvínov, Mostecká 2021, patro 12, plocha 63 m2, 3 balkóny. Nájem 12700 Kč  je včetně záloh na teplo, vodu a stočné. Platí se dopředu, vždy první den v měsíci nájmu. Nájemné je spočítané na jednu osobu, každá další osoba +700 Kč zá ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  12 700 Kč</span></b></div>
+<div class="inzeratylok">Most<br>434 01</div>
+<div class="inzeratyview">1355 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216306673');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216306673');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9325631','7455046','Ji%C5%99%C3%AD+Maria+Sieber');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216306673');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216815035/garsonka-v-centru-chomutova.php"><img src="https://www.bazos.cz/img/1t/035/216815035.jpg?t=1774703595" class="obrazek" alt="Garsonka v centru Chomutova" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216815035/garsonka-v-centru-chomutova.php">Garsonka v centru Chomutova</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 19.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Pronajmu garsonku v centru Chomutova-Dechtochema. Byt je po celkove rekonstrukci. K dispozici sklad v mezipatře a sklep. V bytě je nová kuchyňská linka, pračka a lednice s mrazákem.
+Náklady: 
+Nájem 8.800,-Kč. 
+Záloha na vodu, TUV, teplo, výtah...  ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  8 800 Kč</span></b></div>
+<div class="inzeratylok">Chomutov<br>430 01</div>
+<div class="inzeratyview">84 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216815035');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216815035');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9253196','7551948','Jana');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216815035');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216154976/pronajem-bytu-3kk-72-m-ostrava-hrabuvka-evc-01030.php"><img src="https://www.bazos.cz/img/1t/976/216154976.jpg?t=1774630774" class="obrazek" alt="Pronájem bytu 3+kk 72 m², Ostrava - Hrabůvka, ev.č. 01030" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216154976/pronajem-bytu-3kk-72-m-ostrava-hrabuvka-evc-01030.php">Pronájem bytu 3+kk 72 m², Ostrava - Hrabůvka, ev.č. 01030</a></h2><span class=velikost10> - <span title="TOP 15x Platí do 18.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Ev.č. 01030
+Pronájem prostorného bytu 3+kk s balkonem, sklepem a krásným výhledem, Ostrava-Hrabůvka, ul. Tlapákova
+
+Společnost VÁŠ KONZULTANT REALITY Vám nabízí k pronájmu velmi příjemný a světlý byt o dispozici 3+kk na adrese Ostrava-Hrabůvka, ul. ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  17 990 Kč</span></b></div>
+<div class="inzeratylok">Ostrava<br>700 30</div>
+<div class="inzeratyview">1329 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216154976');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216154976');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','6956406','4705192','V%C3%ADt+%C5%A0pa%C4%8Dek+%28V%C3%A1%C5%A1+konzultant+reality%2C+s.r.o.%29');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216154976');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216753217/unicov-drbenese-91-31-97m2-ov.php"><img src="https://www.bazos.cz/img/1t/217/216753217.jpg?t=1774544027" class="obrazek" alt="Uničov Dr.Beneše 91 3+1 97m2 OV" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216753217/unicov-drbenese-91-31-97m2-ov.php">Uničov Dr.Beneše 91 3+1 97m2 OV</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 17.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Prostorný byt, II.NP., sklep, komora,samostatné WC, úložné prostory na půdě, dvorek, parkování v bezprostřední blízkosti, rekonstrukce 2018, nová okna, instalace el., voda odpady, plynový kotel. Klidný dům. RK prosím ne, děkuji. Cena 4.490.000Kč+RK.</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 4 490 000 Kč</span></b></div>
+<div class="inzeratylok">Olomouc<br>783 91</div>
+<div class="inzeratyview">277 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216753217');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216753217');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','8745920','6751475','Petr+Dvorsk%C3%BD');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216753217');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216656961/byt-21-os-vl-frenstat-pod-radhostem-sidl-beskydske.php"><img src="https://www.bazos.cz/img/1t/961/216656961.jpg?t=1774645261" class="obrazek" alt="Byt 2+1 os. vl. Frenštát pod Radhoštěm, Sídl. Beskydské" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216656961/byt-21-os-vl-frenstat-pod-radhostem-sidl-beskydske.php">Byt 2+1 os. vl. Frenštát pod Radhoštěm, Sídl. Beskydské</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 17.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Nabízíme Vám ke koupi byt 2+1  v žádané lokalitě podhorského městečka Frenštátě pod Radhoštěm, Sídl. Beskydské. 
+
+Jednotka je umístěná ve 3.Np/3 nízkého cihlového bytového domu bez výtahu. Užitná plocha je 55m2 včetně vlastního sklepů (6m2).
+
+V b ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 3 100 000 Kč</span></b></div>
+<div class="inzeratylok">Nový Jičín<br>744 01</div>
+<div class="inzeratyview">367 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216656961');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216656961');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9138402','215059','Vladim%C3%ADr+Ve%C4%8De%C5%99a');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216656961');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216606210/brno-cernovice-byt-ov-2kk-balkon-po-rekonstrukci-byt.php"><img src="https://www.bazos.cz/img/1t/210/216606210.jpg?t=1774269656" class="obrazek" alt="Brno - Černovice, byt OV 2+kk, balkón, po rekonstrukci - byt" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216606210/brno-cernovice-byt-ov-2kk-balkon-po-rekonstrukci-byt.php">Brno - Černovice, byt OV 2+kk, balkón, po rekonstrukci - byt</a></h2><span class=velikost10> - <span title="TOP 5x Platí do 17.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Ev.č. E244B155
+Exkluzivně Vám nabízíme k prodeji jedinečný podkrovní byt o dispozici 2+kk v klidné části Brna – Černovicích, na ulici Blatouchová. Byt byl vybudován v roce 2010 a zaujme nejen svou promyšlenou dispozicí, ale i osobitým stylem a příjem ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 7 490 000 Kč</span></b></div>
+<div class="inzeratylok">Brno<br>618 00</div>
+<div class="inzeratyview">464 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216606210');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216606210');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','3668108','40135','Pavla+H%C3%A1jkov%C3%A1+%28Realitn%C3%AD+kancel%C3%A1%C5%99+-+pobo%C4%8Dka+BRNO%2C+K');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216606210');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216579272/prodej-byty4kk-200-m2-koblizna-6833-60200-brno-brno.php"><img src="https://www.bazos.cz/img/1t/272/216579272.jpg?t=1774601739" class="obrazek" alt="Prodej, byty/4+kk, 200 m2, Kobližná 683/3, 60200 Brno, Brno-" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216579272/prodej-byty4kk-200-m2-koblizna-6833-60200-brno-brno.php">Prodej, byty/4+kk, 200 m2, Kobližná 683/3, 60200 Brno, Brno-</a></h2><span class=velikost10> - <span title="TOP 5x Platí do 17.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Prodej, byty/4+kk, 200 m2, Kobližná 683/3, 60200 Brno, Brno-město [ID 74425]
+
+Nabízíme k prodeji exkluzivní, luxusně zrekonstruovaný a kompletně klimatizovaný byt o dispozici 4+kk s celkovou výměrou 200 m², z toho 95,3 m² činí podlahová plocha a 104, ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 23 900 000 Kč</span></b></div>
+<div class="inzeratylok">Brno<br>602 00</div>
+<div class="inzeratyview">474 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216579272');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216579272');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','917013','8546','REALITYSPOLU');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216579272');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216711115/prodej-bytu-31-s-vlastni-zahradkou-a-garazi.php"><img src="https://www.bazos.cz/img/1t/115/216711115.jpg?t=1774455882" class="obrazek" alt="Prodej bytu 3+1 s vlastní zahrádkou a garáží" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216711115/prodej-bytu-31-s-vlastni-zahradkou-a-garazi.php">Prodej bytu 3+1 s vlastní zahrádkou a garáží</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 16.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Nabízíme k prodeji byt o dispozici 3+1 o celkové ploše 78 m2 v Písečné u Jeseníku( bez RK !) 
+Byt se nachází v I. podlaží a je vytápěn krbovými kamny na dřevo, což snižuje celkové náklady na energie i tím, že v zimě vytápí bojler na teplou vodu.
+Di ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 2 350 000 Kč</span></b></div>
+<div class="inzeratylok">Jeseník<br>790 82</div>
+<div class="inzeratyview">474 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216711115');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216711115');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9400298','7546280','Ladislav+Slav%C3%ADk');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216711115');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216468994/hradek-u-znojma-byt-2kk-53-m-novostavba-terasa-parkov.php"><img src="https://www.bazos.cz/img/1t/994/216468994.jpg?t=1774255895" class="obrazek" alt="Hrádek u Znojma, byt 2+kk, 53 m², novostavba, terasa, parkov" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216468994/hradek-u-znojma-byt-2kk-53-m-novostavba-terasa-parkov.php">Hrádek u Znojma, byt 2+kk, 53 m², novostavba, terasa, parkov</a></h2><span class=velikost10> - <span title="TOP 6x Platí do 16.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Ev.č. E2348B044
+Exkluzivně Vám nabízíme k prodeji krásný byt o dispozici 2+kk o výměře 53 m² s vlastní zahradou o velikosti 97 m², situovaný v novostavbě v oblíbené a klidné části obce Hrádek u Znojmo. Nemovitost se nachází v moderním bytovém domě v  ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 3 822 035 Kč</span></b></div>
+<div class="inzeratylok">Znojmo<br>671 27</div>
+<div class="inzeratyview">1035 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216468994');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216468994');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','3813672','264728','Ing.+Radek+Nov%C3%A1k+%28Realitn%C3%AD+kancel%C3%A1%C5%99+-+pobo%C4%8Dka+BRNO');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216468994');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216690260/byt-11-s-garazi-a-komorou.php"><img src="https://www.bazos.cz/img/1t/260/216690260.jpg?t=1774508328" class="obrazek" alt="Prodej bytu 1+1, s garážovým stáním a komorou 6 m2" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216690260/byt-11-s-garazi-a-komorou.php">Prodej bytu 1+1, s garážovým stáním a komorou 6 m2</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 16.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>byt 1+1 , Praha-Modřany
+Nabízíme příjemný
+světlý byt o dispozici 1+1 v osobním vlastnictví v
+moderní budově z roku 2009 v Praze na
+Modřanech.
+Velikost bytu je 33 m,. Současná dispozice
+vznikla vytvořením oddělené ložnice v původním
+l+kk. v sou ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 6 500 000 Kč</span></b></div>
+<div class="inzeratylok">Praha 1<br>110 00</div>
+<div class="inzeratyview">572 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216690260');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216690260');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9399084','7544905','byte%C4%8Dek');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216690260');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216340139/prodej-byty1kk-87-m2-holzova-lisen-62800-brno-lisen.php"><img src="https://www.bazos.cz/img/1t/139/216340139.jpg?t=1774641339" class="obrazek" alt="Prodej, byty/1+kk, 87 m2, Holzova, Líšeň, 62800 Brno-Líšeň [" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216340139/prodej-byty1kk-87-m2-holzova-lisen-62800-brno-lisen.php">Prodej, byty/1+kk, 87 m2, Holzova, Líšeň, 62800 Brno-Líšeň [</a></h2><span class=velikost10> - <span title="TOP 8x Platí do 16.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Prodej, byty/1+kk, 87 m2, Holzova, Líšeň, 62800 Brno-Líšeň [ID 83427]
+
+V krásném prostředí brněnské části Brno - Líšeň nabízíme ve výhradním zastoupení zrekonstruovaný byt 1+kk. 40m² s velkou terasou 47m² s možností přestavby na 2+kk.
+
+Byt se nachází ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no"> 5 992 000 Kč</span></b></div>
+<div class="inzeratylok">Brno<br>628 00</div>
+<div class="inzeratyview">608 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216340139');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216340139');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','917013','8546','REALITYSPOLU');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216340139');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216627346/pronajem-bytu-1kk-balkon-karlovy-vary-stara-role-nejdlova.php"><img src="https://www.bazos.cz/img/1t/346/216627346.jpg?t=1774428080" class="obrazek" alt="Pronájem bytu 1+kk balkon Karlovy Vary Stará Role, Nejdlova" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216627346/pronajem-bytu-1kk-balkon-karlovy-vary-stara-role-nejdlova.php">Pronájem bytu 1+kk balkon Karlovy Vary Stará Role, Nejdlova</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 16.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Pronajmu hezký, světlý, udržovaný byt 1+kk 34qm s balkónem ve Staré Roli v Karlových Varech, Nejdlova ulice.
+Byt je zařízený.
+Výše čistého nájmu je 9.300Kč plus služby 2.000Kč/ 1 Osoba. Elektřina se převádí na nájemce.
+Kauce 25.000Kč.
+Byt je voln ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  11 300 Kč</span></b></div>
+<div class="inzeratylok">Karlovy Vary<br>360 17</div>
+<div class="inzeratyview">506 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216627346');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216627346');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9396310','7541834','Dita');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216627346');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/214799149/byt-praha-1.php"><img src="https://www.bazos.cz/img/1t/149/214799149.jpg?t=1774400750" class="obrazek" alt="Byt Praha 1" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/214799149/byt-praha-1.php">Byt Praha 1</a></h2><span class=velikost10> - <span title="TOP 4x Platí do 16.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Byt je k nastěhování od 5 dubna.2026 Pronajmu garzonku 30m2 v -1p okna do vnitrobloku . Petrska čvrt. Vse do 5min chuze - metro, tramvaj, obchod , banka, vltava, pamatky, dětske hřište. 
+Najem 22000kc + 3000 el. 
+Jeden najem dopredu + vratna kauce
+JE ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  22 000 Kč</span></b></div>
+<div class="inzeratylok">Praha 1<br>110 00</div>
+<div class="inzeratyview">518 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','214799149');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','214799149');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','2324194','12656','David');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','214799149');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+
+<div class="inzeraty inzeratyflex">
+<div class="inzeratynadpis"><a href="/inzerat/216574587/byt-31-80-m-libeznice-u-prahy.php"><img src="https://www.bazos.cz/img/1t/587/216574587.jpg?t=1774694387" class="obrazek" alt="Byt 3+1 80 m², Líbeznice u Prahy" width="170" height="128"></a>
+<h2 class=nadpis><a href="/inzerat/216574587/byt-31-80-m-libeznice-u-prahy.php">Byt 3+1 80 m², Líbeznice u Prahy</a></h2><span class=velikost10> - <span title="TOP 3x Platí do 15.4. 2026" class="ztop">TOP</span> - [29.3. 2026]</span><br>
+<div class=popis>Tento krásný a světlý byt k pronájmu se nachází v atraktivní lokalitě Líbeznice u Prahy. 
+
+Tento byt o dispozici 3+1 se nachází v cihlovém domě v osobním vlastnictví, kde jsou pouze dvě bytové jednotky. 
+
+Užitná plocha bytu je 80 m². Díky své pol ...</div><br><br>
+</div>
+<div class="inzeratycena"><b><span translate="no">  24 500 Kč</span></b></div>
+<div class="inzeratylok">Praha - východ<br>250 65</div>
+<div class="inzeratyview">270 x</div>
+<div class="inzeratyakce">
+<span onclick="odeslatakci('spam','216574587');return false;" class="akce paction">Označit špatný inzerát</span> <span onclick="odeslatakci('category','216574587');return false;" class="akce paction">Chybnou kategorii</span> <span onclick="odeslatakci('rating','9393419','7538571','Eva+Olivov%C3%A1');return false;" class="akce paction">Ohodnotit uživatele</span> <span onclick="odeslatakci('edit','216574587');return false;" class="akce paction">Smazat/Upravit/Topovat</span>
+</div>
+</div>
+<div id="container_two"></div><script type="text/javascript" charset="utf-8">
+var pageOptions = {
+  'pubId': 'pub-3645948300403337',
+  'query' : 'Byty',
+  "channel": "4719857758",  'linkTarget' : '_blank',
+  'personalizedAds' : 'false',
+  'ivt': false,
+'styleId' : '6171314811',  'hl': 'cs'
+};
+
+var adblock1 = {
+  'container': 'container_one',
+  'width': 'auto',
+  'maxTop' : 2
+};
+
+var adblock2 = {
+  'container': 'container_two',
+  'width': 'auto',
+  'number' : 2
+};
+
+_googCsa('ads', pageOptions, adblock2);</script>
+
+<br><div class="strankovani">Stránka: <b><span class=cisla>1</span></b> <a href="/byt/20/">2</a> <a href="/byt/40/">3</a> <a href="/byt/60/">4</a> <a href="/byt/80/">5</a> <a href="/byt/100/">6</a> <a href="/byt/120/">7</a> <a href="/byt/140/">8</a> <a href="/byt/20/"><b>Další</b></a></div><br><br><br>
+
+
+</div></div><br>
+
+&copy;2026 Bazoš -  <b>Inzerce, Bazar Byty</b><br>
+<a href="https://www.bazos.cz/napoveda.php">Nápověda</a>, <a href="https://www.bazos.cz/dotazy.php">Dotazy</a>, <a href="https://www.bazos.cz/hodnoceni.php">Hodnocení</a>, <a href="https://www.bazos.cz/kontakt.php">Kontakt</a>, <a href="https://www.bazos.cz/reklama.php">Reklama</a>, <a href="https://www.bazos.cz/podminky.php">Podmínky</a>, <a href="https://www.bazos.cz/ochrana-udaju.php">Ochrana údajů</a>, <a href="https://www.bazos.cz/rss.php?rub=re&cat=6100 46569    0 46569    0     0   206k      0 --:--:-- --:--:-- --:--:--  207k
+5">RSS</a>, <form name="formvkm" id="formvkm" method="post" style="display: inline;"><input type="hidden" name="vkm" value="m"><input type="submit" class="vkm" value="Mobilní verze"></form><br>
+
+Inzeráty Reality celkem: <b>44917</b>, za 24 hodin: <b>1968</b><br><br>
+<a href="https://www.bazos.cz/mapa-kategorie.php">Mapa kategorií</a>, <a href="https://reality.bazos.cz/mapa-search.php">Nejvyhledávanější výrazy</a>
+<br>
+Země: <a href="https://reality.bazos.cz">Česká republika</a>, <a href="https://reality.bazos.sk">Slovensko</a>, <a href="https://nieruchomosci.bazos.pl">Polsko</a>, <a href="https://immobilien.bazos.at">Rakousko</a>
+<br>
+<br>
+</div>
+
+<script src="https://www.bazos.cz/cookie-consent.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({"notice_banner_type":"simple","consent_type":"express","palette":"light","language":"cs","page_load_consent_levels":["strictly-necessary"],"notice_banner_reject_button_hide":false,"preferences_center_close_button_hide":false,"page_refresh_confirmation_buttons":false,"cookie_domain": "bazos.cz"});
+});
+</script>
+<a href="#" id="open_preferences_center"> </a>
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NZW1QTHKBB"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-NZW1QTHKBB');
+</script>
+
+</body>
+</html>
