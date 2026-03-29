@@ -46,7 +46,11 @@ def _extract_next_data(html: str) -> dict:
     )
     if not match:
         return {}
-    return json.loads(match.group(1))
+    try:
+        return json.loads(match.group(1))
+    except json.JSONDecodeError as e:
+        log.warning("Bezrealitky: nelze parsovat __NEXT_DATA__ JSON: %s", e)
+        return {}
 
 
 def _resolve_image_url(ref_id: str, apollo_cache: dict) -> str | None:
@@ -62,7 +66,7 @@ def _resolve_image_url(ref_id: str, apollo_cache: dict) -> str | None:
 
 def parse_listing(item: dict, apollo_cache: dict | None = None) -> Listing:
     """Parse a single Advert dict from apolloCache into a Listing."""
-    advert_id = str(item["id"])
+    advert_id = str(item.get("id", ""))
     uri = item.get("uri", advert_id)
     price_type = CONFIG.get("price_type", "sale")
 
