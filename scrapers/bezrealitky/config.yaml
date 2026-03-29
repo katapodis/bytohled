@@ -1,0 +1,8 @@
+source: bezrealitky
+price_type: sale
+locations:
+  - name: "Ostrava"
+    url: "https://www.bezrealitky.cz/vypis/nabidka-prodej/byt/moravskoslezsky-kraj/ostrava"
+  - name: "Frýdek-Místek"
+    url: "https://www.bezrealitky.cz/vypis/nabidka-prodej/byt?kraj=moravskoslezsky-kraj&mesto=frydek-mistek"
+enabled: true
