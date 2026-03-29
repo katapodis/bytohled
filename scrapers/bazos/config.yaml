@@ -1,3 +1,10 @@
 source: bazos
 price_type: sale
+locations:
+  - name: "Ostrava"
+    url: "https://reality.bazos.cz/byt/?hledat=Ostrava"
+  - name: "Frýdek-Místek"
+    url: "https://reality.bazos.cz/byt/?hledat=Frýdek-Místek"
+  - name: "Čeladná a okolí 10km"
+    url: "https://reality.bazos.cz/byt/?hlokalita=739+12&humkreis=10"
 enabled: true

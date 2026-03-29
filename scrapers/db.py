@@ -34,6 +34,7 @@ class SupabaseDB:
             "disposition": listing.disposition,
             "area_m2": listing.area_m2,
             "address": listing.address,
+            "city": listing.city,
             "description": listing.description,
             "images": storage_images,
             "is_active": True,

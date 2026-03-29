@@ -6,7 +6,7 @@ import httpx
 import yaml
 from pathlib import Path
 
-from scrapers.base import BaseScraper, Listing
+from scrapers.base import BaseScraper, Listing, extract_city
 
 CONFIG = yaml.safe_load((Path(__file__).parent / "config.yaml").read_text())
 
@@ -124,6 +124,7 @@ def parse_listing(item: dict, apollo_cache: dict | None = None) -> Listing:
         disposition=disposition,
         area_m2=area_m2,
         address=address,
+        city=extract_city(address),
         description=None,
         images=images,
     )

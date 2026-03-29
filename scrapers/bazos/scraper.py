@@ -4,10 +4,9 @@ import httpx
 import yaml
 from pathlib import Path
 from bs4 import BeautifulSoup
-from scrapers.base import BaseScraper, Listing
+from scrapers.base import BaseScraper, Listing, extract_city
 
 CONFIG = yaml.safe_load((Path(__file__).parent / "config.yaml").read_text())
-BASE_URL = "https://reality.bazos.cz/byt/"
 HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 log = logging.getLogger(__name__)
 
@@ -19,7 +18,6 @@ def parse_price(text: str) -> int | None:
 
 def parse_page(soup: BeautifulSoup, price_type: str = "sale") -> list[Listing]:
     listings = []
-    # Each listing is a div.inzeraty.inzeratyflex (sibling flex row elements)
     for item in soup.select("div.inzeraty.inzeratyflex"):
         try:
             title_el = item.select_one("h2.nadpis a")
@@ -28,16 +26,12 @@ def parse_page(soup: BeautifulSoup, price_type: str = "sale") -> list[Listing]:
             title = title_el.get_text(strip=True)
             href = title_el.get("href", "")
             url = href if href.startswith("http") else f"https://reality.bazos.cz{href}"
-            # Extract numeric ID from URL path, e.g. /inzerat/216500284/...
             id_match = re.search(r"/inzerat/(\d+)/", url)
             external_id = id_match.group(1) if id_match else url.split("/")[-1]
-            # Price is in .inzeratycena span[translate="no"]
             price_el = item.select_one('.inzeratycena span[translate="no"]')
             price = parse_price(price_el.get_text()) if price_el else None
-            # Location is in .inzeratylok (may contain city + ZIP on separate lines)
             lok_el = item.select_one(".inzeratylok")
             if lok_el:
-                # Get only the first text node (city name), ignoring the ZIP code after <br>
                 parts = [t.strip() for t in lok_el.stripped_strings]
                 address = ", ".join(parts) if parts else None
             else:
@@ -52,6 +46,7 @@ def parse_page(soup: BeautifulSoup, price_type: str = "sale") -> list[Listing]:
                 disposition=None,
                 area_m2=None,
                 address=address,
+                city=extract_city(address),
                 description=None,
             ))
         except Exception as e:
@@ -61,11 +56,24 @@ def parse_page(soup: BeautifulSoup, price_type: str = "sale") -> list[Listing]:
 
 class BazosScraper(BaseScraper):
     def fetch_listings(self) -> list[Listing]:
-        try:
-            resp = httpx.get(BASE_URL, headers=HEADERS, timeout=30, follow_redirects=True)
-            resp.raise_for_status()
-            soup = BeautifulSoup(resp.text, "lxml")
-            return parse_page(soup, price_type=CONFIG.get("price_type", "sale"))
-        except Exception as e:
-            log.error("Bazoš chyba: %s", e)
-            return []
+        listings: list[Listing] = []
+        price_type = CONFIG.get("price_type", "sale")
+        seen_ids: set[str] = set()
+
+        for location in CONFIG.get("locations", []):
+            url = location.get("url", "")
+            if not url:
+                continue
+            try:
+                resp = httpx.get(url, headers=HEADERS, timeout=30, follow_redirects=True)
+                resp.raise_for_status()
+                soup = BeautifulSoup(resp.text, "lxml")
+                for listing in parse_page(soup, price_type=price_type):
+                    if listing.external_id not in seen_ids:
+                        seen_ids.add(listing.external_id)
+                        listings.append(listing)
+                log.info("Bazoš %s: %d inzerátů", location.get("name", ""), len(listings))
+            except Exception as e:
+                log.error("Bazoš chyba (%s): %s", location.get("name", ""), e)
+
+        return listings

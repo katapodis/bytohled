@@ -25,6 +25,7 @@ async function getListings(params: Record<string, string>) {
   if (params.disposition) query = query.eq('disposition', params.disposition)
   if (params.price_type) query = query.eq('price_type', params.price_type)
   if (params.max_price) query = query.lte('price', parseInt(params.max_price))
+  if (params.city) query = query.eq('city', params.city)
   if (params.only_active === '1') query = query.eq('is_active', true)
   if (params.only_favorites === '1') query = query.eq('is_favorite', true)
 

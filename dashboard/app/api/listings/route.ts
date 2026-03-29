@@ -30,6 +30,9 @@ export async function GET(req: NextRequest) {
   const maxPrice = searchParams.get('max_price')
   if (maxPrice) query = query.lte('price', parseInt(maxPrice))
 
+  const city = searchParams.get('city')
+  if (city) query = query.eq('city', city)
+
   if (searchParams.get('only_active') === '1') query = query.eq('is_active', true)
   if (searchParams.get('only_favorites') === '1') query = query.eq('is_favorite', true)
 

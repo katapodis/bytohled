@@ -1,11 +1,24 @@
 'use client'
 
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import {
+  getKrajeWithCities,
+  getOkresyWithCities,
+  getCitiesForOkres,
+} from '@/lib/geo'
 
 export default function FilterBar() {
   const router = useRouter()
   const params = useSearchParams()
+  const [availableCities, setAvailableCities] = useState<string[]>([])
+
+  useEffect(() => {
+    fetch('/api/locations')
+      .then((r) => r.json())
+      .then((cities: string[]) => setAvailableCities(cities))
+      .catch(() => {})
+  }, [])
 
   const updateFilter = useCallback((key: string, value: string) => {
     const next = new URLSearchParams(params.toString())
@@ -15,6 +28,41 @@ export default function FilterBar() {
       next.delete(key)
     }
     next.delete('page')
+    router.push(`/listings?${next.toString()}`)
+  }, [params, router])
+
+  const selectedKraj = params.get('kraj') || ''
+  const selectedOkres = params.get('okres') || ''
+  const selectedCity = params.get('city') || ''
+
+  const availableKraje = getKrajeWithCities(availableCities)
+  const availableOkresy = selectedKraj ? getOkresyWithCities(selectedKraj, availableCities) : []
+  const citiesForOkres = selectedKraj && selectedOkres
+    ? getCitiesForOkres(selectedKraj, selectedOkres).filter((c) => availableCities.includes(c))
+    : []
+
+  const handleKrajChange = useCallback((kraj: string) => {
+    const next = new URLSearchParams(params.toString())
+    next.delete('page')
+    if (kraj) {
+      next.set('kraj', kraj)
+    } else {
+      next.delete('kraj')
+    }
+    next.delete('okres')
+    next.delete('city')
+    router.push(`/listings?${next.toString()}`)
+  }, [params, router])
+
+  const handleOkresChange = useCallback((okres: string) => {
+    const next = new URLSearchParams(params.toString())
+    next.delete('page')
+    if (okres) {
+      next.set('okres', okres)
+    } else {
+      next.delete('okres')
+    }
+    next.delete('city')
     router.push(`/listings?${next.toString()}`)
   }, [params, router])
 
@@ -59,6 +107,45 @@ export default function FilterBar() {
         onChange={(e) => updateFilter('max_price', e.target.value)}
         className="border rounded-lg px-3 py-2 text-sm w-40"
       />
+
+      {availableKraje.length > 0 && (
+        <select
+          value={selectedKraj}
+          onChange={(e) => handleKrajChange(e.target.value)}
+          className="border rounded-lg px-3 py-2 text-sm"
+        >
+          <option value="">Kraj (vše)</option>
+          {availableKraje.map((k) => (
+            <option key={k} value={k}>{k}</option>
+          ))}
+        </select>
+      )}
+
+      {selectedKraj && availableOkresy.length > 0 && (
+        <select
+          value={selectedOkres}
+          onChange={(e) => handleOkresChange(e.target.value)}
+          className="border rounded-lg px-3 py-2 text-sm"
+        >
+          <option value="">Okres (vše)</option>
+          {availableOkresy.map((o) => (
+            <option key={o} value={o}>{o}</option>
+          ))}
+        </select>
+      )}
+
+      {selectedOkres && citiesForOkres.length > 0 && (
+        <select
+          value={selectedCity}
+          onChange={(e) => updateFilter('city', e.target.value)}
+          className="border rounded-lg px-3 py-2 text-sm"
+        >
+          <option value="">Město (vše)</option>
+          {citiesForOkres.map((c) => (
+            <option key={c} value={c}>{c}</option>
+          ))}
+        </select>
+      )}
 
       <label className="flex items-center gap-2 text-sm">
         <input

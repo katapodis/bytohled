@@ -11,6 +11,7 @@ export interface Listing {
   disposition: string | null
   area_m2: number | null
   address: string | null
+  city: string | null
   description: string | null
   images: string[]
   is_active: boolean
