@@ -8,7 +8,7 @@ from scrapers.base import BaseScraper, Listing
 
 CONFIG = yaml.safe_load((Path(__file__).parent / "config.yaml").read_text())
 BASE_URL = "https://reality.bazos.cz/byt/"
-HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"}
+HEADERS = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"}
 log = logging.getLogger(__name__)
 
 
@@ -32,7 +32,7 @@ def parse_page(soup: BeautifulSoup, price_type: str = "sale") -> list[Listing]:
             id_match = re.search(r"/inzerat/(\d+)/", url)
             external_id = id_match.group(1) if id_match else url.split("/")[-1]
             # Price is in .inzeratycena span[translate="no"]
-            price_el = item.select_one(".inzeratycena span[translate]")
+            price_el = item.select_one('.inzeratycena span[translate="no"]')
             price = parse_price(price_el.get_text()) if price_el else None
             # Location is in .inzeratylok (may contain city + ZIP on separate lines)
             lok_el = item.select_one(".inzeratylok")
