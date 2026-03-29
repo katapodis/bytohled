@@ -1,52 +1,29 @@
-name: RealitniBot Scraper
+name: Scraper
 
 on:
   schedule:
-    - cron: '*/20 * * * *'   # every 20 minutes
-  workflow_dispatch:           # manual trigger
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Restore database cache
-        uses: actions/cache@v4
+      - uses: actions/setup-python@v5
         with:
-          path: listings.db
-          key: listings-db-main
-
-      - name: Set up Python 3.11
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: 'pip'
 
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Install Playwright Chromium
-        run: playwright install chromium --with-deps
-
-      - name: Run scraper
+      - name: Run scrapers
+        run: python scrapers/runner.py
         env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
-          EMAIL_TO: ${{ secrets.EMAIL_TO }}
-        run: python main.py --once
-
-      - name: Save database cache
-        if: always()
-        uses: actions/cache@v4
-        with:
-          path: listings.db
-          key: listings-db-main
+          DASHBOARD_BASE_URL: ${{ secrets.DASHBOARD_BASE_URL }}
