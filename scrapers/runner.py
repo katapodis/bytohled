@@ -37,6 +37,8 @@ def run_scrapers(
     new_count = 0
     for listing in all_listings:
         if db.listing_exists(listing.external_id, listing.source):
+            if listing.city:
+                db.update_listing_city(listing.external_id, listing.source, listing.city)
             continue
 
         storage_images = db.upload_images(listing.source, listing.external_id, listing.images)

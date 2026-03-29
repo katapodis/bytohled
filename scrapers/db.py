@@ -54,6 +54,9 @@ class SupabaseDB:
         )
         return result.data
 
+    def update_listing_city(self, external_id: str, source: str, city: str) -> None:
+        self.client.table("listings").update({"city": city}).eq("external_id", external_id).eq("source", source).eq("city", None).execute()
+
     def update_listing_active(self, listing_id: str, is_active: bool) -> None:
         self.client.table("listings").update({
             "is_active": is_active,
