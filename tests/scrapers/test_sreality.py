@@ -3,7 +3,7 @@ from pathlib import Path
 from scrapers.sreality.scraper import SrealityScraper, parse_listing
 
 
-FIXTURE = Path("tests/scrapers/fixtures/sreality_response.json")
+FIXTURE = Path(__file__).parent / "fixtures" / "sreality_response.json"
 
 
 def test_parse_listing_returns_listing_object():
