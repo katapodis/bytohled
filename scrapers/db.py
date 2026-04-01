@@ -47,7 +47,7 @@ class SupabaseDB:
         cutoff = (datetime.now(timezone.utc) - timedelta(hours=24)).isoformat()
         result = (
             self.client.table("listings")
-            .select("id,url")
+            .select("id,url,source")
             .eq("is_active", True)
             .lt("last_checked_at", cutoff)
             .execute()

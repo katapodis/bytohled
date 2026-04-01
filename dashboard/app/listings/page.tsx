@@ -9,6 +9,7 @@ import { Listing } from '@/types/listing'
 import ListingCard from '@/components/ListingCard'
 import FilterBar from '@/components/FilterBar'
 import LogoutButton from '@/components/LogoutButton'
+import ScrapeButton from '@/components/ScrapeButton'
 
 interface Props {
   searchParams: Promise<Record<string, string>>
@@ -106,6 +107,7 @@ export default async function ListingsPage({ searchParams }: Props) {
                 </p>
               </div>
             )}
+            <ScrapeButton />
             <LogoutButton />
           </div>
         </div>
