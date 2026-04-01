@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 180" fill="none">
+  <!-- Pozadí -->
+  <rect width="320" height="180" fill="#f1f0f5"/>
+
+  <!-- Mřížka wireframe -->
+  <line x1="0" y1="45" x2="320" y2="45" stroke="#d4d0e0" stroke-width="1"/>
+  <line x1="0" y1="90" x2="320" y2="90" stroke="#d4d0e0" stroke-width="1"/>
+  <line x1="0" y1="135" x2="320" y2="135" stroke="#d4d0e0" stroke-width="1"/>
+  <line x1="80" y1="0" x2="80" y2="180" stroke="#d4d0e0" stroke-width="1"/>
+  <line x1="160" y1="0" x2="160" y2="180" stroke="#d4d0e0" stroke-width="1"/>
+  <line x1="240" y1="0" x2="240" y2="180" stroke="#d4d0e0" stroke-width="1"/>
+
+  <!-- Domeček – obrys střechy -->
+  <polygon points="160,32 88,88 232,88" fill="none" stroke="#9d8fc0" stroke-width="2.5" stroke-linejoin="round"/>
+
+  <!-- Domeček – obrys stěn -->
+  <rect x="96" y="88" width="128" height="70" rx="2" fill="none" stroke="#9d8fc0" stroke-width="2.5"/>
+
+  <!-- Dveře -->
+  <rect x="140" y="118" width="40" height="40" rx="3" fill="none" stroke="#9d8fc0" stroke-width="2"/>
+
+  <!-- Levé okno -->
+  <rect x="104" y="98" width="28" height="22" rx="2" fill="none" stroke="#9d8fc0" stroke-width="2"/>
+  <line x1="118" y1="98" x2="118" y2="120" stroke="#9d8fc0" stroke-width="1.5"/>
+  <line x1="104" y1="109" x2="132" y2="109" stroke="#9d8fc0" stroke-width="1.5"/>
+
+  <!-- Pravé okno -->
+  <rect x="188" y="98" width="28" height="22" rx="2" fill="none" stroke="#9d8fc0" stroke-width="2"/>
+  <line x1="202" y1="98" x2="202" y2="120" stroke="#9d8fc0" stroke-width="1.5"/>
+  <line x1="188" y1="109" x2="216" y2="109" stroke="#9d8fc0" stroke-width="1.5"/>
+
+  <!-- Slunce (kruh + paprsky) -->
+  <circle cx="268" cy="30" r="14" fill="none" stroke="#b8aed4" stroke-width="2"/>
+  <line x1="268" y1="10" x2="268" y2="5" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="268" y1="50" x2="268" y2="55" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="248" y1="30" x2="243" y2="30" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="288" y1="30" x2="293" y2="30" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="254" y1="16" x2="250" y2="12" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="282" y1="44" x2="286" y2="48" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="282" y1="16" x2="286" y2="12" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+  <line x1="254" y1="44" x2="250" y2="48" stroke="#b8aed4" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- Kopce/tráva dole -->
+  <path d="M0 155 Q40 130 80 148 Q120 166 160 145 Q200 124 240 148 Q280 172 320 155 L320 180 L0 180 Z" fill="#ddd9ec" opacity="0.6"/>
+
+  <!-- Text "Bez fotky" -->
+  <text x="160" y="172" text-anchor="middle" font-family="Helvetica Neue, Arial, sans-serif" font-size="11" fill="#9d8fc0" letter-spacing="2" font-weight="500">BEZ FOTKY</text>
+</svg>

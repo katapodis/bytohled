@@ -36,27 +36,19 @@ function LoginForm() {
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <input
-        name="username"
-        type="text"
-        placeholder="Uživatelské jméno"
-        required
-        className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      <input
-        name="password"
-        type="password"
-        placeholder="Heslo"
-        required
-        className="border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-      />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-600 text-white rounded-lg py-2 font-medium hover:bg-blue-700 disabled:opacity-50"
-      >
-        {loading ? 'Přihlašování...' : 'Přihlásit se'}
+      <label className="form-control">
+        <div className="label"><span className="label-text">Uživatelské jméno</span></div>
+        <input name="username" type="text" autoComplete="username" required className="input input-bordered w-full" />
+      </label>
+      <label className="form-control">
+        <div className="label"><span className="label-text">Heslo</span></div>
+        <input name="password" type="password" autoComplete="current-password" required className="input input-bordered w-full" />
+      </label>
+      {error && (
+        <div className="alert alert-error text-sm py-2">{error}</div>
+      )}
+      <button type="submit" disabled={loading} className="btn btn-primary w-full">
+        {loading ? <span className="loading loading-spinner loading-sm" /> : 'Přihlásit se'}
       </button>
     </form>
   )
@@ -64,12 +56,17 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm bg-white rounded-xl shadow p-8">
-        <h1 className="text-2xl font-bold mb-6 text-center">BytoHled</h1>
-        <Suspense fallback={<div className="text-center text-gray-400 text-sm">Načítám...</div>}>
-          <LoginForm />
-        </Suspense>
+    <div className="min-h-screen flex items-center justify-center bg-base-200 p-4">
+      <div className="card w-full max-w-sm bg-base-100 shadow-xl">
+        <div className="card-body gap-6">
+          <div className="text-center">
+            <img src="/logo-full.svg" alt="BytoHled" className="h-12 mx-auto mb-1" />
+            <p className="text-base-content/60 text-sm mt-1">Přihlaste se pro přístup</p>
+          </div>
+          <Suspense fallback={<div className="flex justify-center py-4"><span className="loading loading-dots" /></div>}>
+            <LoginForm />
+          </Suspense>
+        </div>
       </div>
     </div>
   )
