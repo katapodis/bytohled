@@ -68,6 +68,12 @@ class SupabaseDB:
             "notified_at": datetime.now(timezone.utc).isoformat(),
         }).eq("id", listing_id).execute()
 
+    def insert_scrape_log(self, added_count: int, deactivated_count: int) -> None:
+        self.client.table("scrape_logs").insert({
+            "added_count": added_count,
+            "deactivated_count": deactivated_count,
+        }).execute()
+
     def upload_images(self, source: str, external_id: str, image_urls: list[str]) -> list[str]:
         """Stáhne fotky ze zdrojových URL a nahraje do Supabase Storage.
         Vrátí seznam Storage public URL. Selhání jednotlivých fotek se tiše přeskočí."""

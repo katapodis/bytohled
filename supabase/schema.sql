@@ -38,3 +38,19 @@ CREATE POLICY "allow_select" ON listings
 
 -- Zápis a update jen přes service role key (scrapery + dashboard API routes)
 -- Service role automaticky obchází RLS — žádná další policy není potřeba.
+
+-- ---------------------------------------------------------------------------
+-- Tabulka pro historii scrapingu
+-- ---------------------------------------------------------------------------
+CREATE TABLE scrape_logs (
+  id               UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  scraped_at       TIMESTAMPTZ DEFAULT now(),
+  added_count      INTEGER DEFAULT 0,
+  deactivated_count INTEGER DEFAULT 0
+);
+
+CREATE INDEX idx_scrape_logs_scraped_at ON scrape_logs (scraped_at DESC);
+
+-- Veřejné čtení přes anon key (dashboard)
+ALTER TABLE scrape_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "allow_select_scrape_logs" ON scrape_logs FOR SELECT USING (true);

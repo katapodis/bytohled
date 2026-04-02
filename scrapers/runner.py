@@ -53,6 +53,7 @@ def run_scrapers(
         new_count += 1
 
     log.info("Hotovo: %d nových inzerátů", new_count)
+    return new_count
 
 
 _HEADERS = {
@@ -169,17 +170,22 @@ def _is_listing_active(url: str, source: str) -> bool:
     return resp.status_code < 400
 
 
-def check_stale_listings(db: SupabaseDB | None = None) -> None:
+def check_stale_listings(db: SupabaseDB | None = None) -> int:
     if db is None:
         db = SupabaseDB()
 
     stale = db.get_stale_listings()
     log.info("Kontrola aktivity: %d inzerátů", len(stale))
 
+    deactivated_count = 0
     for row in stale:
         is_active = _is_listing_active(row["url"], row["source"])
         db.update_listing_active(row["id"], is_active)
         log.info("%s (%s) → aktivní=%s", row["url"], row["source"], is_active)
+        if not is_active:
+            deactivated_count += 1
+
+    return deactivated_count
 
 
 if __name__ == "__main__":
@@ -187,10 +193,12 @@ if __name__ == "__main__":
     from scrapers.bezrealitky.scraper import BezrealitkyScraper
     from scrapers.bazos.scraper import BazosScraper
 
+    db = SupabaseDB()
     active_scrapers = [
         SrealityScraper(),
         BezrealitkyScraper(),
         BazosScraper(),
     ]
-    run_scrapers(active_scrapers)
-    check_stale_listings()
+    new_count = run_scrapers(active_scrapers, db=db)
+    deactivated_count = check_stale_listings(db=db)
+    db.insert_scrape_log(new_count, deactivated_count)

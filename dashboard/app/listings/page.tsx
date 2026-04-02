@@ -6,23 +6,48 @@ import { supabaseAdmin } from '@/lib/supabase'
 import { SessionData, sessionOptions } from '@/lib/session'
 import { getCitiesForKraj, getCitiesForOkres } from '@/lib/geo'
 import { Listing } from '@/types/listing'
-import ListingCard from '@/components/ListingCard'
+import ListingsView from '@/components/ListingsView'
 import FilterBar from '@/components/FilterBar'
 import LogoutButton from '@/components/LogoutButton'
 import ScrapeButton from '@/components/ScrapeButton'
+import ScrapeLogModal from '@/components/ScrapeLogModal'
 
 interface Props {
   searchParams: Promise<Record<string, string>>
 }
 
-async function getLastScraped(): Promise<string | null> {
-  const { data } = await supabaseAdmin
+interface ScrapeSummary {
+  lastScraped: string
+  added: number
+  deactivated: number
+}
+
+async function getScrapeSummary(): Promise<ScrapeSummary | null> {
+  const { data: latest } = await supabaseAdmin
     .from('listings')
     .select('last_checked_at')
     .order('last_checked_at', { ascending: false })
     .limit(1)
     .single()
-  return data?.last_checked_at ?? null
+
+  if (!latest?.last_checked_at) return null
+
+  const lastScraped = latest.last_checked_at
+  const windowStart = new Date(new Date(lastScraped).getTime() - 35 * 60 * 1000).toISOString()
+
+  const [{ count: added }, { count: deactivated }] = await Promise.all([
+    supabaseAdmin
+      .from('listings')
+      .select('*', { count: 'exact', head: true })
+      .gte('first_seen_at', windowStart),
+    supabaseAdmin
+      .from('listings')
+      .select('*', { count: 'exact', head: true })
+      .eq('is_active', false)
+      .gte('last_checked_at', windowStart),
+  ])
+
+  return { lastScraped, added: added ?? 0, deactivated: deactivated ?? 0 }
 }
 
 async function getListings(params: Record<string, string>) {
@@ -79,9 +104,9 @@ export default async function ListingsPage({ searchParams }: Props) {
 
   const params = await searchParams
   const page = Math.max(1, parseInt(params.page || '1'))
-  const [{ data, count }, lastScraped] = await Promise.all([
+  const [{ data, count }, scrapeSummary] = await Promise.all([
     getListings(params),
-    getLastScraped(),
+    getScrapeSummary(),
   ])
   const listings = (data || []) as Listing[]
   const totalPages = Math.ceil((count || 0) / 50)
@@ -90,24 +115,44 @@ export default async function ListingsPage({ searchParams }: Props) {
     <div className="min-h-screen bg-base-200 p-5">
       <div className="max-w-7xl mx-auto">
         {/* Hlavička */}
-        <div className="flex justify-between items-center mb-5">
-          <div className="flex items-baseline gap-2">
-            <img src="/logo-full.svg" alt="BytoHled" className="h-10" />
-            <span className="badge badge-neutral">{count || 0} inzerátů</span>
-          </div>
-          <div className="flex items-center gap-4">
-            {lastScraped && (
-              <div className="text-right hidden sm:block">
-                <p className="text-[10px] text-base-content/40 uppercase tracking-wide leading-none">Poslední scrape</p>
-                <p className="text-xs text-base-content/60 font-mono mt-0.5">
-                  {new Date(lastScraped).toLocaleString('cs-CZ', {
+        <div className="card bg-base-100 shadow-sm mb-2">
+          <div className="card-body p-3 flex flex-row items-center gap-3">
+
+            {/* Brand */}
+            <img src="/logo-full.svg" alt="BytoHled" className="h-8 flex-shrink-0" />
+            <span className="badge badge-neutral badge-sm">{count ?? 0} inzerátů</span>
+
+            <div className="flex-1" />
+
+            {/* Scrape summary */}
+            {scrapeSummary && (
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="text-[10px] text-base-content/35 uppercase tracking-widest">Scrape</span>
+                <span className="font-mono text-xs text-base-content/55">
+                  {new Date(scrapeSummary.lastScraped).toLocaleString('cs-CZ', {
                     day: '2-digit', month: '2-digit', year: 'numeric',
                     hour: '2-digit', minute: '2-digit',
                   })}
-                </p>
+                </span>
+                <span className="badge badge-success badge-sm gap-1 font-semibold">
+                  +{scrapeSummary.added}
+                </span>
+                <span className="badge badge-error badge-sm gap-1 font-semibold">
+                  ✕{scrapeSummary.deactivated}
+                </span>
               </div>
             )}
-            <ScrapeButton />
+
+            <div className="divider divider-horizontal mx-1 h-7" />
+
+            {/* Scrape akce */}
+            <div className="flex flex-col items-end gap-0.5">
+              <ScrapeButton />
+              <ScrapeLogModal />
+            </div>
+
+            <div className="divider divider-horizontal mx-1 h-7" />
+
             <LogoutButton />
           </div>
         </div>
@@ -122,9 +167,7 @@ export default async function ListingsPage({ searchParams }: Props) {
             <p className="text-sm">Žádné inzeráty nenalezeny.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-            {listings.map((l) => <ListingCard key={l.id} listing={l} />)}
-          </div>
+          <ListingsView listings={listings} />
         )}
 
         {totalPages > 1 && (

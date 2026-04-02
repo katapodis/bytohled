@@ -10,11 +10,13 @@ export async function POST() {
   }
 
   const token = process.env.GITHUB_TOKEN
-  const repo = process.env.GITHUB_REPO // formát: "owner/repo"
+  const repo = process.env.GITHUB_REPO
 
   if (!token || !repo) {
     return NextResponse.json({ error: 'GITHUB_TOKEN nebo GITHUB_REPO není nastaveno' }, { status: 500 })
   }
+
+  const triggeredAt = new Date().toISOString()
 
   const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/scraper.yml/dispatches`, {
     method: 'POST',
@@ -32,6 +34,5 @@ export async function POST() {
     return NextResponse.json({ error: `GitHub API chyba: ${res.status} ${text}` }, { status: 502 })
   }
 
-  // GitHub vrací 204 No Content při úspěchu
-  return NextResponse.json({ ok: true })
+  return NextResponse.json({ ok: true, triggeredAt })
 }
